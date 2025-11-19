@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { getToken, setToken, removeToken } from "../utils/token";
 
 const AuthContext = createContext(null);
@@ -13,10 +13,16 @@ export function AuthProvider({ children }) {
         const token = getToken();
         if (token) {
             try {
-                const decoded = jwt_decode(token);
+                const decoded = jwtDecode(token);
 
                 setUser(decoded);
-                setRoles(decoded.role ? [].concat(decoded.role) : []);
+                setRoles(
+                    decoded.role
+                        ? Array.isArray(decoded.role)
+                            ? decoded.role
+                            : [decoded.role]
+                        : []
+                );
                 setIsAuthenticated(true);
             } catch (exception) {
                 console.warn("Invalid token");
@@ -27,10 +33,16 @@ export function AuthProvider({ children }) {
 
     function login(token) {
         setToken(token);
-        const decoded = jwt_decode(token);
+        const decoded = jwtDecode(token);
 
         setUser(decoded);
-        setRoles(decoded.role ? [].concat(decoded.role) : []);
+        setRoles(
+            decoded.role
+                ? Array.isArray(decoded.role)
+                    ? decoded.role
+                    : [decoded.role]
+                : []
+        );
         setIsAuthenticated(true);
     }
 
