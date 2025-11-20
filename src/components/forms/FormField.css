@@ -1,0 +1,5 @@
+/* Form field styles are inherited from global forms.css */
+.form-field__required {
+  color: var(--accent);
+  font-weight: 600;
+}

@@ -1,15 +1,24 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { PiListBold, PiWaveformBold, PiXBold } from "react-icons/pi";
+import {
+  PiListBold,
+  PiUserCircleBold,
+  PiWaveformBold,
+  PiXBold,
+  PiSignOutBold,
+} from "react-icons/pi";
 import LanguageSwitch from "../../components/language-switch/LanguageSwitch";
 import ThemeSwitch from "../../components/theme-switch/ThemeSwitch";
 import Button from "../../components/ui/Button";
+import { useAuth } from "../../contexts/AuthContext";
 import "./Header.css";
 
 export default function Header() {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,6 +40,31 @@ export default function Header() {
   const closeMenu = () => setIsMenuOpen(false);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
+  const handleLogout = (onNavigate) => {
+    logout();
+    onNavigate?.();
+    navigate("/");
+  };
+
+  const profile = useMemo(() => {
+    if (!user) return null;
+    const avatar =
+      user.avatarUrl ??
+      user.avatar ??
+      user.picture ??
+      user.profileImage ??
+      null;
+    const displayName =
+      user.preferred_username ??
+      user.userName ??
+      user.name ??
+      user.email ??
+      "";
+    const initials = displayName ? displayName[0].toUpperCase() : "M";
+
+    return { avatar, displayName, initials };
+  }, [user]);
+
   const renderNavLinks = (onNavigate) =>
     navLinks.map((link) =>
       link.type === "anchor" ? (
@@ -48,12 +82,39 @@ export default function Header() {
     <>
       <LanguageSwitch />
       <ThemeSwitch />
-      <Button to="/login" variant="ghost" size="md" onClick={onNavigate}>
-        {t("nav.login")}
-      </Button>
-      <Button to="/register" size="md" onClick={onNavigate}>
-        {t("nav.register")}
-      </Button>
+      {isAuthenticated ? (
+        <div className="app-header__user">
+          <Link
+            to="/profile"
+            className="user-avatar"
+            aria-label={t("header.profileLink")}
+            onClick={onNavigate}
+          >
+            {profile?.avatar ? (
+              <img src={profile.avatar} alt={profile.displayName || ""} />
+            ) : (
+              <PiUserCircleBold className="user-avatar__icon" aria-hidden />
+            )}
+          </Link>
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={() => handleLogout(onNavigate)}
+          >
+            <PiSignOutBold className="logout__icon" aria-hidden/>
+            {/* {t("header.logout")} */}
+          </Button>
+        </div>
+      ) : (
+        <>
+          <Button to="/login" variant="ghost" size="md" onClick={onNavigate}>
+            {t("nav.login")}
+          </Button>
+          <Button to="/register" size="md" onClick={onNavigate}>
+            {t("nav.register")}
+          </Button>
+        </>
+      )}
     </>
   );
 

@@ -12,7 +12,9 @@
     "status": "Live beta",
     "menuOpen": "Open main menu",
     "menuClose": "Close menu",
-    "drawerTitle": "Navigate"
+    "drawerTitle": "Navigate",
+    "profileLink": "Open profile settings",
+    "logout": "Sign out"
   },
   "nav": {
     "aria": "Primary navigation",
@@ -95,6 +97,63 @@
           "description": "Sunset downtempo circle where surfers swap mixtapes before night rides.",
           "meta": "54 listeners · oceanside"
         }
+      }
+    }
+  },
+  "auth": {
+    "common": {
+      "loading": "Just a moment...",
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "login": {
+      "eyebrow": "Back to your matches",
+      "title": "Sign in to MelodyMatch",
+      "subtitle": "Drop back into curated rooms, playlists and thoughtful people.",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "Enter your username",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submit": "Sign in",
+      "helper": "Still discovering us?",
+      "helperCta": "Create an account"
+    },
+    "register": {
+      "eyebrow": "Start your story",
+      "title": "Create a MelodyMatch profile",
+      "subtitle": "Tell us how to call you and where we should send intimate session invites.",
+      "usernameLabel": "Display name",
+      "usernamePlaceholder": "How should we address you?",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Create a secure password",
+      "confirmPasswordLabel": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat your password",
+      "submit": "Create account",
+      "helper": "Already vibing with us?",
+      "helperCta": "Sign in",
+      "success": "Account created. Redirecting you to sign in."
+    },
+    "errors": {
+      "required": "This field is required.",
+      "invalidCredentials": "Incorrect username or password.",
+      "passwordMismatch": "Passwords must match.",
+      "registrationFailed": "We could not complete the registration. Try again.",
+      "emailInvalid": "Provide a valid email address.",
+      "noCyrillic": "Please use only Latin characters.",
+      "passwordRequiresDigit": "Passwords must have at least one digit ('0'-'9').",
+      "passwordRequiresLowercase": "Passwords must have at least one lowercase ('a'-'z').",
+      "passwordRequiresUppercase": "Passwords must have at least one uppercase ('A'-'Z')."
+    },
+    "preview": {
+      "eyebrow": "Community vow",
+      "title": "Stay grounded while you match",
+      "description": "Every onboarding step protects intentionality so people arrive soft, honest and ready to listen.",
+      "points": {
+        "discovery": "Living discovery feed tuned by energy, not swipes.",
+        "events": "Access to curated IRL salons & co-listening rituals.",
+        "safety": "Care-first moderation and verified sonic identities."
       }
     }
   },

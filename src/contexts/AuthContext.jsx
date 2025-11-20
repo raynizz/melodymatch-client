@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import { getToken, setToken, removeToken } from "../utils/token";
+import { getAccessToken, setTokens, clearTokens } from "../utils/token";
 
 const AuthContext = createContext(null);
 
@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const token = getToken();
+        const token = getAccessToken();
         if (token) {
             try {
                 const decoded = jwtDecode(token);
@@ -31,9 +31,9 @@ export function AuthProvider({ children }) {
         }
     }, []);
 
-    function login(token) {
-        setToken(token);
-        const decoded = jwtDecode(token);
+    function login(accessToken, refreshToken) {
+        setTokens({ accessToken, refreshToken });
+        const decoded = jwtDecode(accessToken);
 
         setUser(decoded);
         setRoles(
@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
     }
 
     function logout() {
-        removeToken();
+        clearTokens();
         setUser(null);
         setRoles([]);
         setIsAuthenticated(false);
