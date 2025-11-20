@@ -1,0 +1,115 @@
+.app-footer {
+  margin-top: 56px;
+  padding: 48px 32px 32px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-radius: 32px 32px 0 0;
+  box-shadow: 0 -30px 80px rgba(15, 23, 42, 0.1);
+}
+
+.app-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 32px;
+}
+
+.app-footer__brand {
+  max-width: 320px;
+}
+
+.app-footer__logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  background: linear-gradient(120deg, #ff6cab, #7366ff);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  margin-bottom: 18px;
+}
+
+.app-footer__tagline {
+  color: var(--text-muted);
+  margin-bottom: 18px;
+}
+
+.app-footer__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.app-footer__chips span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  background: var(--surface-muted);
+}
+
+.app-footer__column-title {
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.app-footer__column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app-footer__column a {
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.app-footer__column a:hover {
+  color: var(--text-primary);
+}
+
+.app-footer__bottom {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-muted);
+}
+
+.app-footer__social {
+  display: flex;
+  gap: 12px;
+}
+
+.social-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.social-button:hover {
+  transform: translateY(-2px);
+  background: var(--accent-contrast);
+  color: var(--accent);
+}
+
+@media (max-width: 640px) {
+  .app-footer {
+    padding: 40px 20px 28px;
+  }
+}

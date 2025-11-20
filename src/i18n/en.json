@@ -1,0 +1,130 @@
+{
+  "welcome": "Welcome to MelodyMatch",
+  "description": "Find people who share your music taste.",
+  "login": "Login",
+  "register": "Register",
+  "toggleTheme": "Switch theme",
+  "languageSwitch": {
+    "label": "Change interface language"
+  },
+  "header": {
+    "tagline": "Match through shared playlists",
+    "status": "Live beta",
+    "menuOpen": "Open main menu",
+    "menuClose": "Close menu",
+    "drawerTitle": "Navigate"
+  },
+  "nav": {
+    "aria": "Primary navigation",
+    "home": "Home",
+    "features": "Features",
+    "community": "Community",
+    "login": "Login",
+    "register": "Join now"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Curated by resident DJs",
+      "title": "Let your taste find people who feel every beat.",
+      "description": "MelodyMatch analyses vibe signatures, nightly rituals and mood boards to introduce you to listeners you will actually click with.",
+      "primaryCta": "Create profile",
+      "secondaryCta": "Browse community moments",
+      "note": "Free forever. Takes less than a minute.",
+      "panelLabel": "Now playing",
+      "panelEyebrow": "Session mix",
+      "panelTitle": "Intimate pairing set",
+      "liveStatus": "Live sync",
+      "tracks": {
+        "twilight": {
+          "title": "Twilight FM",
+          "mood": "Midnight neo-soul pulse"
+        },
+        "club": {
+          "title": "Club Mirage",
+          "mood": "Luminous house edits"
+        },
+        "sunrise": {
+          "title": "Sunrise Bloom",
+          "mood": "Warm indie electronica"
+        }
+      }
+    },
+    "stats": {
+      "matches": "real matches",
+      "artists": "artists indexed",
+      "events": "intimate sessions monthly"
+    },
+    "features": {
+      "eyebrow": "Crafted journey",
+      "title": "Why audiophiles stay",
+      "subtitle": "Experience-first onboarding merged with sonic chemistry scores to help you build genuine resonance.",
+      "discovery": {
+        "title": "Living discovery feed",
+        "description": "Hyper-personalized capsules curated by tempo, energy and nostalgic hooks shared by the community."
+      },
+      "rooms": {
+        "title": "Private listening rooms",
+        "description": "Spin records with future matches inside cozy rooms powered by latency-free audio streams."
+      },
+      "events": {
+        "title": "Pop-up listening events",
+        "description": "IRL salons hosted in independent venues with community curators and sonic healers."
+      },
+      "safety": {
+        "title": "Care-first safety layer",
+        "description": "Onboarding rituals, verified vibes and respectful pacing keep every connection grounded."
+      }
+    },
+    "community": {
+      "eyebrow": "Community snapshots",
+      "title": "Stories mixed every week",
+      "subtitle": "Local tastemakers highlight listeners who are turning playlists into slow friendships.",
+      "cards": {
+        "kyiv": {
+          "title": "Kyiv · Slow Burn FM",
+          "description": "Analogue R&B session connecting crate diggers and sound artists across Podil.",
+          "meta": "43 listeners · vinyl + cacao"
+        },
+        "warsaw": {
+          "title": "Warsaw · Echo Bloom",
+          "description": "Hyperpop journaling club blending poetry prompts with shared headphone rituals.",
+          "meta": "29 listeners · rooftop"
+        },
+        "lisbon": {
+          "title": "Lisbon · Tidal Bloom",
+          "description": "Sunset downtempo circle where surfers swap mixtapes before night rides.",
+          "meta": "54 listeners · oceanside"
+        }
+      }
+    }
+  },
+  "footer": {
+    "tagline": "Handcrafted in Kyiv for soulful audio communities.",
+    "product": "Product",
+    "company": "Company",
+    "support": "Support",
+    "links": {
+      "journey": "Matching journey",
+      "events": "Pop-up events",
+      "stories": "Success stories",
+      "press": "Press kit",
+      "careers": "Careers",
+      "contact": "Contact",
+      "help": "Help center",
+      "security": "Security",
+      "guidelines": "Community guidelines"
+    },
+    "genres": {
+      "neoSoul": "Neo-soul",
+      "deepHouse": "Deep house",
+      "indiePop": "Indie pop"
+    },
+    "genresLabel": "Genres we nurture",
+    "rights": "All rights reserved. Crafted for dreamers with headphones.",
+    "social": {
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "spotify": "Spotify"
+    }
+  }
+}
