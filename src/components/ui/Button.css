@@ -1,0 +1,56 @@
+.ui-button {
+  border-radius: calc(var(--control-height) / 2);
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  gap: 8px;
+}
+
+.ui-button--md {
+  min-height: var(--control-height);
+  padding: 0 18px;
+}
+
+.ui-button--lg {
+  min-height: calc(var(--control-height) + 4px);
+  padding: 0 22px;
+  font-size: 1rem;
+}
+
+.ui-button--primary {
+  background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(244, 63, 94, 0.3);
+}
+
+.ui-button--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 40px rgba(244, 63, 94, 0.4);
+}
+
+.ui-button--ghost {
+  border-color: var(--border);
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.ui-button--ghost:hover {
+  border-color: color-mix(in srgb, var(--accent) 20%, var(--border));
+  transform: translateY(-1px);
+}
+
+.ui-button--subtle {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+.ui-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  outline-offset: 3px;
+}

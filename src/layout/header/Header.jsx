@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { PiListBold, PiWaveformBold, PiXBold } from "react-icons/pi";
 import LanguageSwitch from "../../components/language-switch/LanguageSwitch";
 import ThemeSwitch from "../../components/theme-switch/ThemeSwitch";
+import Button from "../../components/ui/Button";
 import "./Header.css";
 
 export default function Header() {
@@ -47,12 +48,12 @@ export default function Header() {
     <>
       <LanguageSwitch />
       <ThemeSwitch />
-      <Link to="/login" className="ghost-button" onClick={onNavigate}>
+      <Button to="/login" variant="ghost" size="md" onClick={onNavigate}>
         {t("nav.login")}
-      </Link>
-      <Link to="/register" className="primary-button" onClick={onNavigate}>
+      </Button>
+      <Button to="/register" size="md" onClick={onNavigate}>
         {t("nav.register")}
-      </Link>
+      </Button>
     </>
   );
 

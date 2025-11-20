@@ -12,6 +12,8 @@ import {
   PiWaveformBold,
 } from "react-icons/pi";
 import Layout from "../../layout/layout/Layout";
+import Button from "../../components/ui/Button";
+import SectionHeading from "../../components/ui/SectionHeading";
 import "./Home.css";
 
 export default function Home() {
@@ -105,12 +107,12 @@ export default function Home() {
             <p className="hero__description">{t("home.hero.description")}</p>
 
             <div className="home-cta">
-              <Link to="/register" className="home-cta__primary">
+              <Button to="/register" size="lg">
                 {t("home.hero.primaryCta")}
-              </Link>
-              <a href="#community" className="home-cta__secondary">
+              </Button>
+              <Button href="#community" variant="ghost" size="lg">
                 {t("home.hero.secondaryCta")}
-              </a>
+              </Button>
             </div>
             <p className="home-cta__note">{t("home.hero.note")}</p>
 
@@ -148,11 +150,11 @@ export default function Home() {
         </section>
 
         <section className="features" id="features">
-          <div className="section-heading">
-            <p className="section-eyebrow">{t("home.features.eyebrow")}</p>
-            <h2>{t("home.features.title")}</h2>
-            <p className="section-description">{t("home.features.subtitle")}</p>
-          </div>
+          <SectionHeading
+            eyebrow={t("home.features.eyebrow")}
+            title={t("home.features.title")}
+            description={t("home.features.subtitle")}
+          />
 
           <div className="features__grid">
             {features.map((feature) => (
@@ -168,13 +170,11 @@ export default function Home() {
         </section>
 
         <section className="community" id="community">
-          <div className="section-heading">
-            <p className="section-eyebrow">{t("home.community.eyebrow")}</p>
-            <h2>{t("home.community.title")}</h2>
-            <p className="section-description">
-              {t("home.community.subtitle")}
-            </p>
-          </div>
+          <SectionHeading
+            eyebrow={t("home.community.eyebrow")}
+            title={t("home.community.title")}
+            description={t("home.community.subtitle")}
+          />
 
           <div className="community__cards">
             {communityHighlights.map((card) => (
