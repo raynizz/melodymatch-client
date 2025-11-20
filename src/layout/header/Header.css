@@ -111,6 +111,41 @@
   gap: 12px;
 }
 
+.app-header__user {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-avatar__icon {
+  font-size: 1.7rem;
+  color: var(--text-muted);
+}
+
+.logout__icon {
+  font-size: 1.5rem;
+  color: var(--text-muted);
+}
+
 .app-header__drawer {
   position: fixed;
   inset: 0 0 0 auto;
@@ -189,6 +224,11 @@
 .app-header__actions--mobile .theme-switch {
   width: 100%;
   --switch-width: 100%;
+}
+
+.app-header__actions--mobile .app-header__user {
+  width: 100%;
+  justify-content: space-between;
 }
 
 .app-header__backdrop {
