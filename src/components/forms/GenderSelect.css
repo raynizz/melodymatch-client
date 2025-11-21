@@ -1,0 +1,64 @@
+.gender-select {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gender-select__option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.gender-select__option:has(.gender-select__radio[data-state="checked"]) {
+  background: rgba(118, 75, 255, 0.08);
+  border-color: var(--accent);
+}
+
+.gender-select__radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.gender-select__radio[data-state="checked"] {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.gender-select__radio:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.gender-select__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+}
+
+.gender-select__label {
+  flex: 1;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+
+.gender-select[data-disabled] {
+  opacity: 0.6;
+  pointer-events: none;
+}

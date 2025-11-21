@@ -6,3 +6,6 @@
 export { default as FormField } from "./FormField";
 export { default as PasswordField } from "./PasswordField";
 export { default as TextareaField } from "./TextareaField";
+export { default as DropdownField } from "./DropdownField";
+export { default as GenderSelect } from "./GenderSelect";
+export { default as PreferredGendersSelect } from "./PreferredGendersSelect";
