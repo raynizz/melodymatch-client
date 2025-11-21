@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 /**
  * Validation schemas using Zod
@@ -192,7 +193,14 @@ export function createProfileEditorSchema(t) {
       phoneNumber: z
         .string()
         .max(32, { message: t("profile.errors.length", { max: 32 }) })
-        .optional(),
+        .optional()
+        .refine(
+          (value) =>
+            !value ||
+            value.trim() === "" ||
+            isValidPhoneNumber(value.trim(), { defaultCountry: "UA" }),
+          { message: t("profile.errors.phone") }
+        ),
       isActive: z.literal(true).optional(),
       lockoutEnabled: z.literal(true).optional(),
     }),

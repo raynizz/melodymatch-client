@@ -12,6 +12,7 @@ import {
   TextareaField,
   GenderSelect,
   PreferredGendersSelect,
+  LocationField,
 } from "../../components/forms";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -636,11 +637,18 @@ export default function ProfilePage() {
                   {...register("profile.age")}
                 />
 
-                <FormField
+                <LocationField
                   id="profile-location"
                   label={t("profile.userProfile.fields.location")}
                   placeholder={t("profile.userProfile.fields.locationPlaceholder")}
                   error={errors.profile?.location?.message}
+                  detectDisabled={isSaving || isFetching}
+                  onDetected={(cityName) => {
+                    setValue("profile.location", cityName, {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    });
+                  }}
                   {...register("profile.location")}
                 />
 

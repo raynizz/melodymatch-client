@@ -9,3 +9,4 @@ export { default as TextareaField } from "./TextareaField";
 export { default as DropdownField } from "./DropdownField";
 export { default as GenderSelect } from "./GenderSelect";
 export { default as PreferredGendersSelect } from "./PreferredGendersSelect";
+export { default as LocationField } from "./LocationField";

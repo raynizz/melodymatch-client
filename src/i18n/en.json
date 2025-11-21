@@ -228,6 +228,18 @@
         "interestsPlaceholder": "Comma separated interest ids, e.g. 1,2,3",
         "profilePhotoUrls": "Profile photos"
       },
+      "locationField": {
+        "detectCta": "Use current location",
+        "detecting": "Detecting your city…",
+        "geoUnavailable": "Geolocation isn't supported here. Enter the city manually.",
+        "permissionDenied": "We can't access your location. Allow permissions or type it manually.",
+        "unavailable": "We couldn't read your position. Try again.",
+        "timeout": "Locating timed out. Try again.",
+        "lookupFailed": "We couldn't determine your city. Try again later.",
+        "detected": "Detected {{city}}.",
+        "ipFallback": "Couldn't read GPS signal. Trying network lookup…",
+        "ipFallbackFailed": "We couldn't guess your city from the network."
+      },
     "photoUploadCta": "Add photo",
     "photoUploadLoading": "Uploading…",
     "photoUploadDisabled": "Save your profile first to enable photo uploads.",
@@ -250,7 +262,8 @@
       "number": "Provide a valid non-negative number.",
       "bioLength": "Bio must be at most 600 characters.",
       "locationLength": "Location must be at most 120 characters.",
-      "min": "Value must be at least {{min}}."
+      "min": "Value must be at least {{min}}.",
+      "phone": "Enter a valid phone number, e.g. +380441112233."
     }
   },
   "footer": {
