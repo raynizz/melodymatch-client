@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 /**
  * Validation schemas using Zod
@@ -142,4 +143,103 @@ export function createPasswordSchema(t, options = {}) {
   }
 
   return schema;
+}
+
+function preprocessNumber(value) {
+  if (value === "" || value === null || value === undefined) {
+    return undefined;
+  }
+  const parsed = Number(value);
+  return Number.isNaN(parsed) ? value : parsed;
+}
+
+const optionalUnsignedNumber = (t, { min = 0 } = {}) =>
+  z
+    .preprocess(
+      preprocessNumber,
+      z
+        .number({
+          invalid_type_error: t("profile.errors.number"),
+        })
+        .int(t("profile.errors.number"))
+        .min(min, {
+          message:
+            min > 0
+              ? t("profile.errors.min", { min })
+              : t("profile.errors.number"),
+        })
+    )
+    .optional();
+
+export function createProfileEditorSchema(t) {
+  return z.object({
+    identity: z.object({
+      userName: z
+        .string()
+        .min(1, { message: t("profile.errors.required") })
+        .max(64, { message: t("profile.errors.length", { max: 64 }) }),
+      name: z
+        .string()
+        .max(64, { message: t("profile.errors.length", { max: 64 }) })
+        .optional(),
+      surname: z
+        .string()
+        .max(64, { message: t("profile.errors.length", { max: 64 }) })
+        .optional(),
+      email: z
+        .string()
+        .min(1, { message: t("profile.errors.required") })
+        .email({ message: t("profile.errors.email") }),
+      phoneNumber: z
+        .string()
+        .max(32, { message: t("profile.errors.length", { max: 32 }) })
+        .optional()
+        .refine(
+          (value) =>
+            !value ||
+            value.trim() === "" ||
+            isValidPhoneNumber(value.trim(), { defaultCountry: "UA" }),
+          { message: t("profile.errors.phone") }
+        ),
+      isActive: z.literal(true).optional(),
+      lockoutEnabled: z.literal(true).optional(),
+    }),
+    melody: z.object({
+      gender: z
+        .coerce.number({
+          invalid_type_error: t("profile.errors.gender"),
+        })
+        .int({ message: t("profile.errors.gender") })
+        .min(0, { message: t("profile.errors.gender") })
+        .max(2, { message: t("profile.errors.gender") }),
+      avatarUrl: z
+        .string()
+        .url({ message: t("profile.errors.url") })
+        .or(z.literal(""))
+        .optional(),
+    }),
+    profile: z.object({
+      age: optionalUnsignedNumber(t, { min: 18 }),
+      bio: z
+        .string()
+        .max(600, { message: t("profile.errors.bioLength") })
+        .optional(),
+      location: z
+        .string()
+        .max(120, { message: t("profile.errors.locationLength") })
+        .optional(),
+      preferredGenders: z.array(z.number()).optional(),
+      preferredMinAge: optionalUnsignedNumber(t, { min: 18 }),
+      preferredMaxAge: optionalUnsignedNumber(t, { min: 18 }),
+      profilePhotoUrls: z
+        .array(
+          z.string().url({
+            message: t("profile.errors.url"),
+          })
+        )
+        .optional()
+        .default([]),
+      interests: z.array(z.number()).optional(),
+    }),
+  });
 }

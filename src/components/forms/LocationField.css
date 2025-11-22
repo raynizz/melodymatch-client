@@ -1,0 +1,51 @@
+.location-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.location-field__label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.location-field__detect {
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  color: var(--text);
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.location-field__detect:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.location-field__detect:not(:disabled):hover {
+  background: var(--surface);
+}
+
+.location-field__status {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.location-field__status--success {
+  color: rgb(7, 115, 82);
+}
+
+.location-field__status--error {
+  color: rgb(153, 27, 27);
+}
+
+.location-field__status--info {
+  color: var(--text-muted);
+}

@@ -51,6 +51,10 @@
         }
       }
     },
+    "dropdown": {
+      "placeholder": "Select option",
+      "multiPlaceholder": "Select one or more options"
+    },
     "stats": {
       "matches": "real matches",
       "artists": "artists indexed",
@@ -155,6 +159,134 @@
         "events": "Access to curated IRL salons & co-listening rituals.",
         "safety": "Care-first moderation and verified sonic identities."
       }
+    }
+  },
+  "profile": {
+    "eyebrow": "Profile studio",
+    "title": "Shape your MelodyMatch presence",
+    "subtitle": "Edit your identity account, MelodyMatch settings and discovery profile from one screen.",
+    "state": {
+      "loading": "Loading your profile…",
+      "loadError": "We could not load your profile details.",
+      "success": "Profile updated successfully.",
+      "error": "We could not save your changes.",
+      "avatarError": "Could not upload avatar. Try a different file.",
+      "photoError": "Could not upload the selected photo."
+    },
+    "identity": {
+      "title": "Identity account",
+      "description": "These fields live in the IdentityServer user and power authentication.",
+      "readonlyNotice": "Identity fields are managed by administrators. Contact support if you need to update them.",
+      "fields": {
+        "userName": "Username",
+        "email": "Email address",
+        "name": "First name",
+        "namePlaceholder": "Your given name",
+        "surname": "Last name",
+        "surnamePlaceholder": "Your family name",
+        "phoneNumber": "Phone number",
+        "isActive": "Account is active",
+        "lockoutEnabled": "Allow lockout protection"
+      },
+      "partialError": "Identity data could not be updated due to missing permissions. Other sections were saved."
+    },
+    "melody": {
+      "title": "MelodyMatch user",
+      "description": "Control gender and avatar that are shared across the product.",
+      "genderLabel": "Gender",
+      "gender": {
+        "notSpecified": "Not specified",
+        "male": "Male",
+        "female": "Female"
+      },
+      "avatarUrl": "Avatar URL",
+    "avatarHelper": "Upload a square image so it looks crisp in the navigation.",
+    "avatarPreviewAlt": "Avatar preview",
+    "uploadCta": "Upload avatar",
+    "uploadLoading": "Uploading…",
+    "crop": {
+      "title": "Adjust your avatar",
+      "instructions": "Drag to reposition the image and use the slider to zoom.",
+      "confirm": "Apply",
+      "cancel": "Cancel",
+      "zoom": "Zoom"
+    }
+  },
+    "userProfile": {
+      "title": "Discovery profile",
+      "description": "This data powers matching filters and how you appear to others.",
+      "fields": {
+        "age": "Age",
+        "bio": "Bio",
+        "bioPlaceholder": "Describe your vibe, music rituals or energy.",
+        "location": "Location",
+        "locationPlaceholder": "City, region or remote",
+        "preferredMinAge": "Preferred min age",
+        "preferredMaxAge": "Preferred max age",
+        "preferredGenders": "Preferred genders",
+        "interests": "Interests",
+        "interestsHelper": "Pick every genre that feels like you. We use these to find better matches.",
+        "profilePhotoUrls": "Profile photos"
+      },
+      "interests": {
+        "rock": "Rock",
+        "pop": "Pop",
+        "jazz": "Jazz",
+        "classical": "Classical",
+        "hipHop": "Hip Hop",
+        "electronic": "Electronic",
+        "country": "Country",
+        "reggae": "Reggae",
+        "metal": "Metal",
+        "folk": "Folk",
+        "blues": "Blues",
+        "rnb": "R&B",
+        "indie": "Indie",
+        "alternative": "Alternative",
+        "funk": "Funk",
+        "disco": "Disco",
+        "gospel": "Gospel",
+        "ska": "Ska",
+        "punk": "Punk",
+        "soul": "Soul",
+        "ambient": "Ambient"
+      },
+      "locationField": {
+        "detectCta": "Use current location",
+        "detecting": "Detecting your city…",
+        "geoUnavailable": "Geolocation isn't supported here. Enter the city manually.",
+        "permissionDenied": "We can't access your location. Allow permissions or type it manually.",
+        "unavailable": "We couldn't read your position. Try again.",
+        "timeout": "Locating timed out. Try again.",
+        "lookupFailed": "We couldn't determine your city. Try again later.",
+        "detected": "Detected {{city}}.",
+        "ipFallback": "Couldn't read GPS signal. Trying network lookup…",
+        "ipFallbackFailed": "We couldn't guess your city from the network."
+      },
+    "photoUploadCta": "Add photo",
+    "photoUploadLoading": "Uploading…",
+    "photoUploadDisabled": "Save your profile first to enable photo uploads.",
+    "photosEmpty": "No profile photos yet.",
+    "removePhoto": "Remove photo",
+    "photoLimit": "You can add up to 3 profile photos.",
+    "photoDeleteError": "We couldn't remove that photo. Try again."
+  },
+    "actions": {
+      "save": "Save changes",
+      "saving": "Saving…",
+      "reset": "Reset"
+    },
+    "errors": {
+      "required": "This field is required.",
+      "length": "Maximum length is {{max}} characters.",
+      "email": "Enter a valid email address.",
+      "url": "Enter a valid URL or leave the field empty.",
+      "gender": "Select a valid gender value.",
+      "number": "Provide a valid non-negative number.",
+      "bioLength": "Bio must be at most 600 characters.",
+      "locationLength": "Location must be at most 120 characters.",
+      "min": "Value must be at least {{min}}.",
+      "phone": "Enter a valid phone number, e.g. +380441112233."
     }
   },
   "footer": {

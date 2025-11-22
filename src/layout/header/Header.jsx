@@ -12,13 +12,14 @@ import LanguageSwitch from "../../components/language-switch/LanguageSwitch";
 import ThemeSwitch from "../../components/theme-switch/ThemeSwitch";
 import Button from "../../components/ui/Button";
 import { useAuth } from "../../contexts/AuthContext";
+import { resolveAssetUrl } from "../../utils/url";
 import "./Header.css";
 
 export default function Header() {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, currentMelodyUser } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -47,23 +48,27 @@ export default function Header() {
   };
 
   const profile = useMemo(() => {
-    if (!user) return null;
-    const avatar =
-      user.avatarUrl ??
-      user.avatar ??
-      user.picture ??
-      user.profileImage ??
+    if (!user && !currentMelodyUser) return null;
+    const rawAvatar =
+      currentMelodyUser?.avatarUrl ??
+      user?.avatarUrl ??
+      user?.avatar ??
+      user?.picture ??
+      user?.profileImage ??
       null;
+    const avatar = resolveAssetUrl(rawAvatar);
     const displayName =
-      user.preferred_username ??
-      user.userName ??
-      user.name ??
-      user.email ??
+      currentMelodyUser?.identityUser?.userName ??
+      currentMelodyUser?.identityUser?.email ??
+      user?.preferred_username ??
+      user?.userName ??
+      user?.name ??
+      user?.email ??
       "";
     const initials = displayName ? displayName[0].toUpperCase() : "M";
 
     return { avatar, displayName, initials };
-  }, [user]);
+  }, [currentMelodyUser, user]);
 
   const renderNavLinks = (onNavigate) =>
     navLinks.map((link) =>
