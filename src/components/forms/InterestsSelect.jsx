@@ -1,9 +1,10 @@
 import { useMemo } from "react";
-import "./PreferredGendersSelect.css";
+import "./InterestsSelect.css";
 
-export default function PreferredGendersSelect({
+export default function InterestsSelect({
   id,
   label,
+  helper,
   error,
   options = [],
   value = [],
@@ -12,19 +13,13 @@ export default function PreferredGendersSelect({
 }) {
   const normalizedValue = useMemo(() => {
     return Array.isArray(value)
-      ? value.map((item) =>
-          item === null || item === undefined ? 0 : Number(item)
-        )
+      ? value
+          .map((item) =>
+            item === null || item === undefined ? null : Number(item)
+          )
+          .filter((item) => item !== null && !Number.isNaN(item))
       : [];
   }, [value]);
-
-  const availableOptions = useMemo(() => {
-    const hasOtherGenders = normalizedValue.some((v) => v !== 0);
-    if (hasOtherGenders) {
-      return options.filter((opt) => Number(opt.value) !== 0);
-    }
-    return options;
-  }, [normalizedValue, options]);
 
   const handleToggle = (optionValue) => {
     const numValue = Number(optionValue);
@@ -33,33 +28,27 @@ export default function PreferredGendersSelect({
     if (currentSet.has(numValue)) {
       currentSet.delete(numValue);
     } else {
-      if (numValue === 0) {
-        currentSet.clear();
-        currentSet.add(0);
-      } else {
-        currentSet.delete(0);
-        currentSet.add(numValue);
-      }
+      currentSet.add(numValue);
     }
 
     onChange?.(Array.from(currentSet));
   };
 
   return (
-    <div className={`form-field ${error ? "form-field--error" : ""}`}>
+    <div className={`form-field interests-select ${error ? "form-field--error" : ""}`}>
       {label && <label htmlFor={id}>{label}</label>}
+      {helper && <p className="interests-select__helper">{helper}</p>}
 
-      <div className="preferred-genders__options" id={id}>
-        {availableOptions.map((option) => {
+      <div className="interests-select__options" id={id}>
+        {options.map((option) => {
           const numValue = Number(option.value);
           const isSelected = normalizedValue.includes(numValue);
-
           return (
             <button
               key={option.value}
               type="button"
-              className={`preferred-genders__option ${
-                isSelected ? "preferred-genders__option--selected" : ""
+              className={`interests-select__option ${
+                isSelected ? "interests-select__option--selected" : ""
               }`}
               onClick={() => handleToggle(option.value)}
               disabled={disabled}

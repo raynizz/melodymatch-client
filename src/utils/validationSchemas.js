@@ -239,7 +239,7 @@ export function createProfileEditorSchema(t) {
         )
         .optional()
         .default([]),
-      interestsText: z.string().optional(),
+      interests: z.array(z.number()).optional(),
     }),
   });
 }

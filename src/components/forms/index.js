@@ -10,3 +10,4 @@ export { default as DropdownField } from "./DropdownField";
 export { default as GenderSelect } from "./GenderSelect";
 export { default as PreferredGendersSelect } from "./PreferredGendersSelect";
 export { default as LocationField } from "./LocationField";
+export { default as InterestsSelect } from "./InterestsSelect";

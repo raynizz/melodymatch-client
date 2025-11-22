@@ -13,6 +13,7 @@ import {
   GenderSelect,
   PreferredGendersSelect,
   LocationField,
+  InterestsSelect,
 } from "../../components/forms";
 import { useAuth } from "../../contexts/AuthContext";
 import {
@@ -39,6 +40,7 @@ import { IdentityUserDto } from "../../dto/identity/IdentityUserDto";
 import { MelodyMatchUserDto } from "../../dto/melodyMatchUser/MelodyMatchUserDto";
 import { UserProfileDto } from "../../dto/userProfile/UserProfileDto";
 import { GENDER_OPTIONS, Gender } from "../../types/gender";
+import { INTEREST_OPTIONS } from "../../types/interests";
 import "./ProfilePage.css";
 
 const defaultFormValues = {
@@ -65,13 +67,9 @@ const defaultFormValues = {
     preferredMinAge: "",
     preferredMaxAge: "",
     profilePhotoUrls: [],
-    interestsText: "",
+    interests: [],
   },
 };
-
-function mapInterestsToText(profile) {
-  return (profile.interests ?? []).join(", ");
-}
 
 function normalizeProfilePhoto(photo) {
   if (!photo) {
@@ -118,7 +116,7 @@ function buildFormValues(identity, melody, profile) {
         normalizedPhotoUrls.length > 0
           ? normalizedPhotoUrls
           : profile.profilePhotoUrls ?? [],
-      interestsText: mapInterestsToText(profile),
+      interests: profile.interests ?? [],
     },
   };
 }
@@ -129,14 +127,6 @@ function parseNumber(value) {
   }
   const parsed = Number(value);
   return Number.isNaN(parsed) ? undefined : parsed;
-}
-
-function parseInterests(text) {
-  if (!text) return [];
-  return text
-    .split(/[,\n]/)
-    .map((value) => Number(value.trim()))
-    .filter((value) => !Number.isNaN(value));
 }
 
 export default function ProfilePage() {
@@ -173,6 +163,7 @@ export default function ProfilePage() {
   });
 
   const preferredGenders = watch("profile.preferredGenders") ?? [];
+  const selectedInterests = watch("profile.interests") ?? [];
   const avatarUrl = watch("melody.avatarUrl");
   const melodyGender = watch("melody.gender");
   const resolvedAvatarUrl = resolveAssetUrl(avatarUrl);
@@ -203,10 +194,19 @@ export default function ProfilePage() {
       })),
     [t]
   );
+  const interestOptions = useMemo(
+    () =>
+      INTEREST_OPTIONS.map((option) => ({
+        value: option.value,
+        label: t(option.labelKey),
+      })),
+    [t]
+  );
 
   useEffect(() => {
     register("profile.preferredGenders");
     register("profile.profilePhotoUrls");
+    register("profile.interests");
     register("melody.gender");
     register("melody.avatarUrl");
   }, [register]);
@@ -451,7 +451,9 @@ export default function ProfilePage() {
         preferredMinAge: parseNumber(formData.profile.preferredMinAge),
         preferredMaxAge: parseNumber(formData.profile.preferredMaxAge),
         profilePhotoUrls: formData.profile.profilePhotoUrls ?? [],
-        interests: parseInterests(formData.profile.interestsText),
+        interests: (formData.profile.interests ?? [])
+          .map((value) => Number(value))
+          .filter((value) => Number.isInteger(value)),
       });
 
       setIdentityUser(updatedIdentity);
@@ -694,13 +696,20 @@ export default function ProfilePage() {
                 error={errors.profile?.preferredGenders?.message}
               />
 
-              <TextareaField
+              <InterestsSelect
                 id="profile-interests"
                 label={t("profile.userProfile.fields.interests")}
-                placeholder={t("profile.userProfile.fields.interestsPlaceholder")}
-                rows={2}
-                error={errors.profile?.interestsText?.message}
-                {...register("profile.interestsText")}
+                helper={t("profile.userProfile.fields.interestsHelper")}
+                options={interestOptions}
+                value={selectedInterests}
+                onChange={(selectedValues) => {
+                  setValue("profile.interests", selectedValues, {
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  });
+                }}
+                disabled={isSaving || isFetching}
+                error={errors.profile?.interests?.message}
               />
 
               <div className="profile-photo-manager">
