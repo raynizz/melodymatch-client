@@ -21,6 +21,8 @@
     "home": "Home",
     "features": "Features",
     "community": "Community",
+    "feed": "Feed",
+    "chats": "Chats",
     "login": "Login",
     "register": "Join now"
   },
@@ -101,6 +103,47 @@
           "description": "Sunset downtempo circle where surfers swap mixtapes before night rides.",
           "meta": "54 listeners · oceanside"
         }
+      }
+    }
+  },
+  "match": {
+    "eyebrow": "Live matching",
+    "title": "Discover listeners curated for you",
+    "subtitle": "Swipe through profiles, react instantly and add a note when it matters.",
+    "queueLabel": "in queue",
+    "states": {
+      "loading": "Loading suggestions…",
+      "empty": "No suitable profiles right now. Check back soon.",
+      "idle": "Waiting for new suggestions."
+    },
+    "labels": {
+      "noPhotos": "No photos yet"
+    },
+    "errors": {
+      "load": "Could not load suggestions.",
+      "reaction": "Could not send your reaction.",
+      "noProfile": "We could not find your MelodyMatch profile. Complete it first."
+    },
+    "actions": {
+      "refresh": "Refresh suggestions",
+      "skip": "Skip",
+      "message": "Like with message",
+      "report": "Report",
+      "like": "Like"
+    },
+    "modals": {
+      "cancel": "Cancel",
+      "message": {
+        "title": "Send a note",
+        "description": "Add a line to send with your like.",
+        "placeholder": "Write a short message…",
+        "submit": "Send like with message"
+      },
+      "report": {
+        "title": "Report profile",
+        "description": "Share what felt off. Our care team will review.",
+        "placeholder": "Describe the issue",
+        "submit": "Send report"
       }
     }
   },
