@@ -42,7 +42,7 @@
 
 .match-card__indicator {
   position: absolute;
-  top: 16px;
+  top: 48px;
   padding: 10px 12px;
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.5);
@@ -54,10 +54,16 @@
   gap: 6px;
   font-weight: 700;
   opacity: 0;
-  transition: opacity 0.15s linear;
+  transition: opacity 0.15s ease, transform 0.18s ease;
   backdrop-filter: blur(6px);
   pointer-events: none;
   z-index: 2;
+  transform: scale(var(--hint-scale, 0.8));
+}
+
+.match-card__indicator.is-active {
+  opacity: 1;
+  transform: scale(var(--hint-scale, 1));
 }
 
 .match-card__indicator svg {
@@ -67,15 +73,18 @@
 
 .match-card__indicator--left {
   left: 16px;
+  transform-origin: left center;
 }
 
 .match-card__indicator--right {
   right: 16px;
+  transform-origin: right center;
 }
 
 .match-card__indicator--up {
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(var(--hint-scale, 0.8));
+  transform-origin: center;
 }
 
 .match-card__photo {

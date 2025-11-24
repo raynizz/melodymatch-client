@@ -193,7 +193,11 @@ export default function MatchCard({
 
   const renderHintIcon = () => {
     if (!swipeHint) return null;
-    const style = { opacity: Math.min(1, swipeHint.strength) };
+    const strength = Math.min(1, swipeHint.strength);
+    const style = {
+      opacity: strength,
+      "--hint-scale": 0.8 + 0.2 * strength,
+    };
 
     const iconMap = {
       left: <PiXBold aria-hidden />,
@@ -203,7 +207,9 @@ export default function MatchCard({
 
     return (
       <div
-        className={`match-card__indicator match-card__indicator--${swipeHint.direction}`}
+        className={`match-card__indicator match-card__indicator--${swipeHint.direction} ${
+          strength > 0 ? "is-active" : ""
+        }`}
         style={style}
       >
         {iconMap[swipeHint.direction]}
