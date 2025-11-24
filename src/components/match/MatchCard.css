@@ -40,6 +40,44 @@
   cursor: pointer;
 }
 
+.match-card__indicator {
+  position: absolute;
+  top: 16px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s linear;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.match-card__indicator svg {
+  width: 22px;
+  height: 22px;
+}
+
+.match-card__indicator--left {
+  left: 16px;
+}
+
+.match-card__indicator--right {
+  right: 16px;
+}
+
+.match-card__indicator--up {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .match-card__photo {
   position: absolute;
   inset: 0;
@@ -155,6 +193,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.match-card__message {
+  margin: 8px 0 0;
+  padding: 12px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(4px);
+  font-weight: 500;
 }
 
 .match-card .chip {

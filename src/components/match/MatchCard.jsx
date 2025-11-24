@@ -3,6 +3,9 @@ import {
   PiMapPinLineDuotone,
   PiMusicNotesSimpleDuotone,
   PiUserDuotone,
+  PiHeartBold,
+  PiChatCircleTextBold,
+  PiXBold,
 } from "react-icons/pi";
 import { resolveAssetUrl } from "../../utils/url";
 import "./MatchCard.css";
@@ -41,10 +44,13 @@ export default function MatchCard({
   animationDirection,
   disableGestures,
   noPhotosLabel = "No photos yet",
+  inlineMessage,
+  enableSwipeUp = true,
 }) {
   const [drag, setDrag] = useState({ x: 0, y: 0, isDragging: false });
   const [peekUp, setPeekUp] = useState(false);
   const startRef = useRef(null);
+  const prefetchedRef = useRef(new Set());
   const photoCount = profile?.photosUrls?.length ?? 0;
 
   const photoUrl = useMemo(() => {
@@ -60,6 +66,30 @@ export default function MatchCard({
     setDrag({ x: 0, y: 0, isDragging: false });
     setPeekUp(false);
   }, [profile?.melodyMatchUserId, animationDirection]);
+
+  useEffect(() => {
+    const urls = (profile?.photosUrls ?? [])
+      .map((url) => resolveAssetUrl(url))
+      .filter(Boolean);
+
+    if (!urls.length) return;
+
+    let isActive = true;
+    urls.forEach((url) => {
+      if (prefetchedRef.current.has(url)) return;
+      const img = new Image();
+      img.loading = "lazy";
+      img.src = url;
+      img.onload = img.onerror = () => {
+        if (!isActive) return;
+        prefetchedRef.current.add(url);
+      };
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [profile?.melodyMatchUserId, profile?.photosUrls]);
 
   const handlePointerDown = (event) => {
     if (disableGestures) return;
@@ -107,7 +137,7 @@ export default function MatchCard({
       return;
     }
 
-    if (-y > DRAG_THRESHOLD) {
+    if (enableSwipeUp && -y > DRAG_THRESHOLD) {
       setPeekUp(true);
       onSwipeUp?.();
       setTimeout(() => setPeekUp(false), EXIT_ANIMATION_MS);
@@ -126,6 +156,31 @@ export default function MatchCard({
     ? exitTransforms[animationDirection] ?? ""
     : `translate(${drag.x}px, ${drag.y}px) rotate(${drag.x / 25}deg)`;
 
+  const swipeHint = (() => {
+    if (animationDirection) {
+      return { direction: animationDirection, strength: 1 };
+    }
+    const { x, y } = drag;
+    const absX = Math.abs(x);
+    const absY = Math.abs(y);
+
+    if (absX > absY && absX > 10) {
+      return {
+        direction: x > 0 ? "right" : "left",
+        strength: Math.min(1, absX / DRAG_THRESHOLD),
+      };
+    }
+
+    if (enableSwipeUp && -y > 10) {
+      return {
+        direction: "up",
+        strength: Math.min(1, Math.abs(y) / DRAG_THRESHOLD),
+      };
+    }
+
+    return null;
+  })();
+
   const classNames = [
     "match-card",
     animationDirection ? "is-exiting" : "",
@@ -135,6 +190,26 @@ export default function MatchCard({
   ]
     .filter(Boolean)
     .join(" ");
+
+  const renderHintIcon = () => {
+    if (!swipeHint) return null;
+    const style = { opacity: Math.min(1, swipeHint.strength) };
+
+    const iconMap = {
+      left: <PiXBold aria-hidden />,
+      right: <PiHeartBold aria-hidden />,
+      up: <PiChatCircleTextBold aria-hidden />,
+    };
+
+    return (
+      <div
+        className={`match-card__indicator match-card__indicator--${swipeHint.direction}`}
+        style={style}
+      >
+        {iconMap[swipeHint.direction]}
+      </div>
+    );
+  };
 
   return (
     <article
@@ -149,6 +224,7 @@ export default function MatchCard({
         onPointerCancel={resetPointer}
         onPointerLeave={resetPointer}
       >
+        {renderHintIcon()}
         {photoCount > 1 && (
           <div className="match-card__progress">
             {profile.photosUrls.map((_, index) => (
@@ -192,6 +268,10 @@ export default function MatchCard({
         {profile?.bio && <p className="match-card__bio">{profile.bio}</p>}
 
         <InterestChips interests={profile?.interests} />
+
+        {inlineMessage && (
+          <p className="match-card__message">{inlineMessage}</p>
+        )}
 
         {profile?.photosUrls?.length === 0 && (
           <p className="match-card__meta">

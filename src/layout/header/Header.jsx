@@ -34,6 +34,7 @@ export default function Header() {
 
   const navLinks = [
     { key: "match", label: t("nav.feed"), to: "/match", type: "route" },
+    { key: "likes", label: t("nav.likes"), to: "/likes", type: "route" },
     { key: "chats", label: t("nav.chats"), to: "#chats", type: "anchor" },
   ];
 

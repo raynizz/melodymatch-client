@@ -12,6 +12,7 @@ export class MatchSuggestionDto {
       ? payload.interests
       : [];
     this.gender = payload.gender ?? "";
+    this.message = payload.message ?? "";
   }
 
   get primaryPhoto() {

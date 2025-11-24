@@ -22,6 +22,7 @@
     "features": "Features",
     "community": "Community",
     "feed": "Feed",
+    "likes": "Likes",
     "chats": "Chats",
     "login": "Login",
     "register": "Join now"
@@ -145,6 +146,24 @@
         "placeholder": "Describe the issue",
         "submit": "Send report"
       }
+    }
+  },
+  "likes": {
+    "eyebrow": "Incoming likes",
+    "title": "People who liked you",
+    "subtitle": "See who reached out and decide how to respond.",
+    "states": {
+      "loading": "Loading likes…",
+      "empty": "No new likes right now.",
+      "idle": "Waiting for new likes."
+    },
+    "errors": {
+      "load": "Could not load likes.",
+      "reaction": "Could not send your reaction.",
+      "noProfile": "We could not find your MelodyMatch profile. Complete it first."
+    },
+    "actions": {
+      "refresh": "Refresh likes"
     }
   },
   "auth": {

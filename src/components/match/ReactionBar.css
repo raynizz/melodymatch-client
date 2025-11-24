@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+.reaction-bar--compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .reaction-button {
   height: 56px;
   border-radius: 16px;

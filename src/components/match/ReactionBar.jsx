@@ -16,6 +16,7 @@ export default function ReactionBar({
   messageLabel,
   reportLabel,
   likeLabel,
+  showMessageButton = true,
 }) {
   const makeHandler = (fn) => () => {
     if (!disabled) {
@@ -23,48 +24,59 @@ export default function ReactionBar({
     }
   };
 
+  const buttons = [
+    {
+      key: "skip",
+      className: "reaction-button is-skip",
+      onClick: onSkip,
+      label: skipLabel,
+      icon: <PiXBold aria-hidden />,
+    },
+    showMessageButton
+      ? {
+          key: "message",
+          className: "reaction-button is-message",
+          onClick: onMessage,
+          label: messageLabel,
+          icon: <PiChatCircleTextBold aria-hidden />,
+        }
+      : null,
+    {
+      key: "report",
+      className: "reaction-button is-report",
+      onClick: onReport,
+      label: reportLabel,
+      icon: <PiFlagBold aria-hidden />,
+    },
+    {
+      key: "like",
+      className: "reaction-button is-like",
+      onClick: onLike,
+      label: likeLabel,
+      icon: <PiHeartBold aria-hidden />,
+    },
+  ].filter(Boolean);
+
   return (
-    <div className="reaction-bar" aria-label="Reactions">
-      <button
-        type="button"
-        className="reaction-button is-skip"
-        onClick={makeHandler(onSkip)}
-        disabled={disabled}
-        aria-label={skipLabel}
-        title={skipLabel}
-      >
-        <PiXBold aria-hidden />
-      </button>
-      <button
-        type="button"
-        className="reaction-button is-message"
-        onClick={makeHandler(onMessage)}
-        disabled={disabled}
-        aria-label={messageLabel}
-        title={messageLabel}
-      >
-        <PiChatCircleTextBold aria-hidden />
-      </button>
-      <button
-        type="button"
-        className="reaction-button is-report"
-        onClick={makeHandler(onReport)}
-        disabled={disabled}
-        aria-label={reportLabel}
-        title={reportLabel}
-      >
-        <PiFlagBold aria-hidden />
-      </button>
-      <button
-        type="button"
-        className="reaction-button is-like"
-        onClick={makeHandler(onLike)}
-        disabled={disabled}
-        aria-label={likeLabel}
-        title={likeLabel}
-      >
-        <PiHeartBold aria-hidden />
-      </button>
+    <div
+      className={`reaction-bar ${
+        buttons.length === 3 ? "reaction-bar--compact" : ""
+      }`}
+      aria-label="Reactions"
+    >
+      {buttons.map((btn) => (
+        <button
+          key={btn.key}
+          type="button"
+          className={btn.className}
+          onClick={makeHandler(btn.onClick)}
+          disabled={disabled}
+          aria-label={btn.label}
+          title={btn.label}
+        >
+          {btn.icon}
+        </button>
+      ))}
     </div>
   );
 }
