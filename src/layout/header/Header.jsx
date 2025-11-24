@@ -33,9 +33,9 @@ export default function Header() {
   }, []);
 
   const navLinks = [
-    { key: "home", label: t("nav.home"), to: "/", type: "route" },
-    { key: "features", label: t("nav.features"), to: "#features", type: "anchor" },
-    { key: "community", label: t("nav.community"), to: "#community", type: "anchor" },
+    { key: "match", label: t("nav.feed"), to: "/match", type: "route" },
+    { key: "likes", label: t("nav.likes"), to: "/likes", type: "route" },
+    { key: "chats", label: t("nav.chats"), to: "#chats", type: "anchor" },
   ];
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -131,34 +131,31 @@ export default function Header() {
             <span className="app-header__logo" aria-hidden>
               <PiWaveformBold />
             </span>
-            <div className="app-header__identity">
-              <span className="brand-title">MelodyMatch</span>
-              <span className="brand-subtitle">{t("header.tagline")}</span>
-            </div>
+            <span className="brand-pill">{t("header.status")}</span>
           </Link>
-
-          <span className="brand-pill">{t("header.status")}</span>
-
-          <button
-            type="button"
-            className="app-header__menu-toggle"
-            aria-label={
-              isMenuOpen ? t("header.menuClose") : t("header.menuOpen")
-            }
-            aria-expanded={isMenuOpen}
-            onClick={toggleMenu}
-          >
-            {isMenuOpen ? <PiXBold aria-hidden /> : <PiListBold aria-hidden />}
-          </button>
         </div>
 
-        <nav className="app-header__nav app-header__nav--desktop" aria-label={t("nav.aria")}>
-          {renderNavLinks()}
-        </nav>
+        {navLinks.length > 0 && (
+          <nav className="app-header__nav app-header__nav--desktop" aria-label={t("nav.aria")}>
+            {renderNavLinks()}
+          </nav>
+        )}
 
         <div className="app-header__actions app-header__actions--desktop">
           {actionControls()}
         </div>
+
+        <button
+          type="button"
+          className="app-header__menu-toggle"
+          aria-label={
+            isMenuOpen ? t("header.menuClose") : t("header.menuOpen")
+          }
+          aria-expanded={isMenuOpen}
+          onClick={toggleMenu}
+        >
+          {isMenuOpen ? <PiXBold aria-hidden /> : <PiListBold aria-hidden />}
+        </button>
       </header>
 
       <aside
@@ -177,9 +174,11 @@ export default function Header() {
           </button>
         </div>
 
-        <nav className="app-header__nav app-header__nav--mobile" aria-label={t("nav.aria")}>
-          {renderNavLinks(closeMenu)}
-        </nav>
+        {navLinks.length > 0 && (
+          <nav className="app-header__nav app-header__nav--mobile" aria-label={t("nav.aria")}>
+            {renderNavLinks(closeMenu)}
+          </nav>
+        )}
 
         <div className="app-header__actions app-header__actions--mobile">
           {actionControls(closeMenu)}

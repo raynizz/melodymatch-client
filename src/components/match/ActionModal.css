@@ -1,0 +1,61 @@
+.action-modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 7, 18, 0.62);
+  padding: 20px;
+  z-index: 80;
+}
+
+.action-modal__card {
+  width: min(520px, 100%);
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.3);
+  display: grid;
+  gap: 16px;
+}
+
+.action-modal__card header .eyebrow {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.action-modal__card .helper {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+}
+
+.action-modal__field {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.action-modal__field textarea {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 12px;
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  resize: vertical;
+}
+
+.action-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 640px) {
+  .action-modal__card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+}
