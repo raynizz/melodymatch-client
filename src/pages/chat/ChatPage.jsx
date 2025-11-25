@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { PiXBold } from "react-icons/pi";
 import Layout from "../../layout/layout/Layout";
 import Button from "../../components/ui/Button";
 import { useAuth } from "../../contexts/AuthContext";
-import { fetchUserChats } from "../../api/chatService";
+import { fetchUserChats, deleteChatById } from "../../api/chatService";
 import { resolveAssetUrl } from "../../utils/url";
 import "./ChatPage.css";
 
@@ -43,9 +44,18 @@ function ChatCard({
   chat,
   currentUserId,
   onSelect,
+  onDelete,
+  onSwipeOpen,
+  onSwipeClose,
+  isSwiped,
   fallbackName,
   emptyPreviewLabel,
 }) {
+  const { t } = useTranslation();
+  const [dragStartX, setDragStartX] = useState(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const dragMovedRef = useRef(false);
+
   const companion = chat.findCompanion(currentUserId);
   const title =
     companion?.displayName?.trim() ||
@@ -61,8 +71,79 @@ function ChatCard({
     preview = content.length > 50 ? content.substring(0, 50) + "..." : content;
   }
 
+  const handleStart = (event) => {
+    const x = event.touches?.[0]?.clientX ?? event.clientX;
+    setDragStartX(x);
+    dragMovedRef.current = false;
+  };
+
+  const handleMove = (event) => {
+    if (dragStartX === null) return;
+    const x = event.touches?.[0]?.clientX ?? event.clientX;
+    const delta = x - dragStartX;
+    if (Math.abs(delta) > 4) {
+      dragMovedRef.current = true;
+    }
+    const clamped = Math.max(-120, Math.min(0, delta));
+    setDragOffset(clamped);
+  };
+
+  const handleEnd = () => {
+    if (dragStartX === null) return;
+    if (dragOffset < -60) {
+      onSwipeOpen?.(chat.id);
+      setDragOffset(-120);
+    } else {
+      onSwipeClose?.();
+      setDragOffset(0);
+    }
+    setDragStartX(null);
+  };
+
+  useEffect(() => {
+    setDragOffset(isSwiped ? -120 : 0);
+  }, [isSwiped]);
+
+  const handleCardClick = () => {
+    if (dragMovedRef.current) {
+      dragMovedRef.current = false;
+      return;
+    }
+    if (isSwiped) {
+      return;
+    }
+    onSelect?.(chat);
+  };
+
+  const handleDelete = (e) => {
+    e.stopPropagation();
+    onDelete?.(chat);
+  };
+
   return (
-    <button type="button" className="chat-card" onClick={() => onSelect?.(chat)}>
+    <div
+      className={`chat-card__wrapper ${isSwiped ? "is-swiped" : ""}`}
+      onTouchStart={handleStart}
+      onTouchMove={handleMove}
+      onTouchEnd={handleEnd}
+      onMouseDown={handleStart}
+      onMouseMove={(e) => dragStartX !== null && handleMove(e)}
+      onMouseUp={handleEnd}
+    >
+      <button
+        type="button"
+        className="chat-card__delete"
+        aria-label={t("chats.actions.deleteChat")}
+        onClick={handleDelete}
+      >
+        <PiXBold aria-hidden />
+      </button>
+    <button
+      type="button"
+      className="chat-card"
+      onClick={handleCardClick}
+      style={{ transform: `translateX(${dragOffset}px)` }}
+    >
       <ChatAvatar participant={companion} title={title} />
 
       <div className="chat-card__body">
@@ -80,6 +161,7 @@ function ChatCard({
         </div>
       </div>
     </button>
+    </div>
   );
 }
 
@@ -108,6 +190,8 @@ export default function ChatPage() {
   const [chats, setChats] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [swipedChatId, setSwipedChatId] = useState(null);
+  const [chatToDelete, setChatToDelete] = useState(null);
 
   const loadChats = useCallback(async () => {
     setIsLoading(true);
@@ -129,7 +213,13 @@ export default function ChatPage() {
   useEffect(() => {
     if (!isAuthenticated) return;
     loadChats();
+    setSwipedChatId(null);
   }, [isAuthenticated, loadChats]);
+
+  const handleDeleteChat = useCallback(async (chat) => {
+    if (!chat?.id) return;
+    setChatToDelete(chat);
+  }, []);
 
   const statusMessage = useMemo(() => {
     if (error) return error;
@@ -138,13 +228,19 @@ export default function ChatPage() {
     return "";
   }, [chats.length, error, isLoading, t]);
 
+  const closeSwipeOnOutside = (event) => {
+    if (swipedChatId && !event.target.closest(".chat-card__wrapper")) {
+      setSwipedChatId(null);
+    }
+  };
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
   return (
     <Layout>
-      <div className="chats-page">
+      <div className="chats-page" onClick={closeSwipeOnOutside}>
         <header className="chats-page__header">
           <div>
             <p className="eyebrow">{t("chats.eyebrow")}</p>
@@ -181,9 +277,60 @@ export default function ChatPage() {
                   fallbackName={t("chats.labels.fallbackName")}
                   emptyPreviewLabel={t("chats.labels.noMessages")}
                   onSelect={(selected) => navigate(`/chats/${selected.id}`)}
+                  onDelete={handleDeleteChat}
+                  onSwipeOpen={(id) => setSwipedChatId(id)}
+                  onSwipeClose={() => setSwipedChatId(null)}
+                  isSwiped={swipedChatId === chat.id}
                 />
               ))}
         </div>
+
+        {chatToDelete && (
+          <div
+            className="chat-delete-modal"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setChatToDelete(null)}
+          >
+            <div
+              className="chat-delete-modal__card"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="chat-delete-modal__title">
+                {t("chats.actions.deleteChatConfirmTitle")}
+              </p>
+              <p className="chat-delete-modal__description">
+                {t("chats.actions.deleteChatConfirmDescription")}
+              </p>
+              <div className="chat-delete-modal__actions">
+                <button
+                  type="button"
+                  onClick={() => setChatToDelete(null)}
+                >
+                  {t("chats.thread.cancel")}
+                </button>
+                <button
+                  type="button"
+                  className="danger"
+                  onClick={async () => {
+                    try {
+                      await deleteChatById(chatToDelete.id);
+                      setChats((prev) => prev.filter((c) => c.id !== chatToDelete.id));
+                    } catch (err) {
+                      console.error("Failed to delete chat", err);
+                      setError(t("chats.states.error"));
+                    } finally {
+                      setChatToDelete(null);
+                      setSwipedChatId(null);
+                    }
+                  }}
+                >
+                  {t("chats.actions.deleteChat")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

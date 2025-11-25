@@ -12,6 +12,7 @@ import { getAccessToken } from "../../utils/token";
 import { resolveAssetUrl } from "../../utils/url";
 import { API_HOST } from "../../api/constants";
 import "./ChatThreadPage.css";
+import { set } from "zod";
 
 const hubUrl = `${API_HOST.replace(/\/$/, "")}/hubs/chat`;
 
@@ -36,6 +37,10 @@ export default function ChatThreadPage() {
   const [isConnected, setIsConnected] = useState(false);
   const [typingUsers, setTypingUsers] = useState(new Set());
   const [companionOnline, setCompanionOnline] = useState(false);
+  const [editingMessageId, setEditingMessageId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+  const [optionsMessage, setOptionsMessage] = useState(null);
+  const [deleteCandidate, setDeleteCandidate] = useState(null);
 
   const connectionRef = useRef(null);
   const typingTimeoutRef = useRef(null);
@@ -199,6 +204,33 @@ export default function ChatThreadPage() {
       }
     });
 
+    connection.on("MessageUpdated", (message) => {
+      if (!message || message.chatId !== chatId) return;
+      const updated = new ChatMessageDto(message);
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === updated.id ? updated : msg))
+      );
+      if (updated.senderId !== melodyMatchUserId) {
+        markMessagesAsRead([updated.id]);
+      }
+    });
+
+    connection.on("MessageDeleted", (payload) => {
+      const payloadChatId = payload?.chatId ?? payload?.ChatId;
+      const messageId = payload?.messageId ?? payload?.id ?? payload?.MessageId;
+      if (!messageId || payloadChatId !== chatId) return;
+      setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
+      if (editingMessageId === messageId) {
+        cancelEditing();
+      }
+      if (deleteCandidate?.id === messageId) {
+        setDeleteCandidate(null);
+      }
+      if (optionsMessage?.id === messageId) {
+        setOptionsMessage(null);
+      }
+    });
+
     connection
       .start()
       .then(() => {
@@ -282,6 +314,57 @@ export default function ChatThreadPage() {
     }
   };
 
+  const startEditing = (message) => {
+    if (!message || message.senderId !== melodyMatchUserId) return;
+    setEditingMessageId(message.id);
+    setEditingText(message.content ?? "");
+    setOptionsMessage(null);
+  };
+
+  const cancelEditing = () => {
+    setEditingMessageId(null);
+    setEditingText("");
+  };
+
+  const saveEditing = async (message) => {
+    if (!message || message.id !== editingMessageId) return;
+    const trimmed = editingText.trim();
+    if (!trimmed || !connectionRef.current || !isConnected) return;
+    try {
+      await connectionRef.current.invoke("UpdateMessage", {
+        id: message.id,
+        chatId,
+        content: trimmed,
+        isRead: message.isRead,
+      });
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === message.id ? { ...msg, content: trimmed } : msg
+        )
+      );
+      cancelEditing();
+    } catch (err) {
+      console.error("Failed to update message", err);
+      setError(t("chats.thread.updateError"));
+    }
+  };
+
+  const handleDeleteMessage = async (message) => {
+    if (!message || message.senderId !== melodyMatchUserId) return;
+    if (!connectionRef.current || !isConnected) return;
+    try {
+      await connectionRef.current.invoke("DeleteMessage", message.id, chatId);
+      setMessages((prev) => prev.filter((msg) => msg.id !== message.id));
+      if (editingMessageId === message.id) {
+        cancelEditing();
+      }
+      setDeleteCandidate(null);
+    } catch (err) {
+      console.error("Failed to delete message", err);
+      setError(t("chats.thread.deleteError"));
+    }
+  };
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -333,8 +416,15 @@ export default function ChatThreadPage() {
                 <div
                   key={msg.id}
                   className={`message-bubble ${isMine ? "is-mine" : "is-theirs"}`}
+                  onContextMenu={(e) => {
+                    if (!isMine) return;
+                    e.preventDefault();
+                    setOptionsMessage(msg);
+                  }}
                 >
-                  <div className="message-text">{msg.content}</div>
+                  <div className="message-text">
+                    <span>{msg.content}</span>
+                  </div>
                   <div className="message-meta">
                     <span className="message-time">{formatTime(msg.creationTime)}</span>
                     {isMine && (
@@ -360,6 +450,105 @@ export default function ChatThreadPage() {
           )}
           <div ref={bottomRef} />
         </div>
+
+        {optionsMessage && (
+          <div
+            className="message-modal"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setOptionsMessage(null)}
+          >
+            <div
+              className="message-modal__dialog"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="message-modal__title">{t("chats.thread.messageActions")}</p>
+              <p className="message-modal__preview">{optionsMessage.content}</p>
+              <div className="message-modal__actions">
+                <button type="button" onClick={() => startEditing(optionsMessage)}>
+                  {t("chats.thread.edit")}
+                </button>
+                <button type="button" onClick={() => setDeleteCandidate(optionsMessage)}>
+                  {t("chats.thread.delete")}
+                </button>
+                <button type="button" onClick={() => setOptionsMessage(null)}>
+                  {t("chats.thread.cancel")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {deleteCandidate && (
+          <div
+            className="message-modal"
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setDeleteCandidate(null)}
+          >
+            <div
+              className="message-modal__dialog"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="message-modal__title">{t("chats.thread.deleteConfirm")}</p>
+              <p className="message-modal__preview">{deleteCandidate.content}</p>
+              <div className="message-modal__actions">
+                <button type="button" onClick={() => setDeleteCandidate(null)}>
+                  {t("chats.thread.cancel")}
+                </button>
+                <button
+                  type="button"
+                  className="danger"
+                  onClick={() => {
+                    handleDeleteMessage(deleteCandidate);
+                    setOptionsMessage(null);
+                  }}
+                >
+                  {t("chats.thread.delete")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {editingMessageId && (
+          <div
+            className="message-modal"
+            role="dialog"
+            aria-modal="true"
+            onClick={cancelEditing}
+          >
+            <div
+              className="message-modal__dialog"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="message-modal__title">{t("chats.thread.editMessage")}</p>
+              <label className="message-modal__field">
+                <span>{t("chats.thread.placeholder")}</span>
+                <textarea
+                  value={editingText}
+                  onChange={(e) => setEditingText(e.target.value)}
+                  rows={3}
+                  autoFocus
+                />
+              </label>
+              <div className="message-modal__actions">
+                <button type="button" onClick={cancelEditing}>
+                  {t("chats.thread.cancel")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    saveEditing(messages.find((m) => m.id === editingMessageId))
+                  }
+                  disabled={!editingText.trim()}
+                >
+                  {t("chats.thread.save")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <form className="chat-thread__composer" onSubmit={handleSend}>
           <input

@@ -176,7 +176,11 @@
       "error": "Could not load chats right now."
     },
     "actions": {
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "deleteChat": "Delete chat",
+      "deleteChatConfirm": "Delete this chat? It will remove the conversation and all messages permanently.",
+      "deleteChatConfirmTitle": "Delete chat forever?",
+      "deleteChatConfirmDescription": "This will remove the conversation and all messages. You cannot undo this action."
     },
     "labels": {
       "fallbackName": "Listener",
@@ -192,8 +196,17 @@
       "empty": "No messages in this chat yet.",
       "error": "Could not load this chat.",
       "sendError": "Could not send message.",
+      "updateError": "Could not update message.",
+      "deleteError": "Could not delete message.",
+      "deleteConfirm": "Delete this message?",
       "placeholder": "Type a message…",
-      "send": "Send"
+      "send": "Send",
+      "edit": "Edit",
+      "editMessage": "Edit message",
+      "messageActions": "Message actions",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete"
     }
   },
   "auth": {

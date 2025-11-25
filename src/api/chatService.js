@@ -26,3 +26,8 @@ export async function fetchChatMessages(chatId) {
   const { data } = await apiClient.get(`${MESSAGE_URL}/messages/${chatId}`);
   return (data ?? []).map((item) => new ChatMessageDto(item));
 }
+
+export async function deleteChatById(chatId) {
+  if (!chatId) return;
+  await apiClient.delete(`${CHAT_URL}/chat/${chatId}`);
+}
