@@ -166,6 +166,36 @@
       "refresh": "Refresh likes"
     }
   },
+  "chats": {
+    "eyebrow": "Conversations",
+    "title": "Your chats",
+    "subtitle": "People you matched with recently. Tap to continue the vibe.",
+    "states": {
+      "loading": "Loading chats…",
+      "empty": "No chats yet. Start matching to open conversations.",
+      "error": "Could not load chats right now."
+    },
+    "actions": {
+      "refresh": "Refresh"
+    },
+    "labels": {
+      "fallbackName": "Listener",
+      "noMessages": "No messages yet"
+    },
+    "thread": {
+      "back": "Back to chats",
+      "online": "Online",
+      "offline": "Offline",
+      "connected": "Connected",
+      "disconnected": "Reconnecting…",
+      "loading": "Loading conversation…",
+      "empty": "No messages in this chat yet.",
+      "error": "Could not load this chat.",
+      "sendError": "Could not send message.",
+      "placeholder": "Type a message…",
+      "send": "Send"
+    }
+  },
   "auth": {
     "common": {
       "loading": "Just a moment...",
