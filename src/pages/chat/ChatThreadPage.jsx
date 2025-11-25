@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import * as signalR from "@microsoft/signalr";
+import { PiCheckBold, PiChecksBold } from "react-icons/pi";
 import Layout from "../../layout/layout/Layout";
 import Button from "../../components/ui/Button";
 import { useAuth } from "../../contexts/AuthContext";
@@ -337,8 +338,12 @@ export default function ChatThreadPage() {
                   <div className="message-meta">
                     <span className="message-time">{formatTime(msg.creationTime)}</span>
                     {isMine && (
-                      <span className="read-receipt" title={msg.isRead ? "Прочитано" : "Надіслано"}>
-                        {msg.isRead ? "✓✓" : "✓"}
+                      <span
+                        className="read-receipt"
+                        title={msg.isRead ? "Прочитано" : "Надіслано"}
+                        aria-label={msg.isRead ? "Прочитано" : "Надіслано"}
+                      >
+                        {msg.isRead ? <PiChecksBold aria-hidden /> : <PiCheckBold aria-hidden />}
                       </span>
                     )}
                   </div>
