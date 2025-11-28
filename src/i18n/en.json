@@ -190,6 +190,7 @@
       "back": "Back to chats",
       "online": "Online",
       "offline": "Offline",
+      "typing": "Typing…",
       "connected": "Connected",
       "disconnected": "Reconnecting…",
       "loading": "Loading conversation…",
