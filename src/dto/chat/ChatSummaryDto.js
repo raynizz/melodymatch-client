@@ -1,14 +1,30 @@
 export class ChatParticipantDto {
   constructor(payload = {}) {
-    this.id = payload.id ?? payload.identityUser?.id ?? "";
-    this.identityUser = payload.identityUser ?? null;
+    this.id =
+      payload.id ??
+      payload.Id ??
+      payload.userId ??
+      payload.UserId ??
+      payload.identityUser?.id ??
+      payload.identityUser?.Id ??
+      "";
+    this.identityUser = payload.identityUser ?? payload.IdentityUser ?? null;
     this.avatarUrl =
       payload.avatarUrl ??
       payload.identityUser?.avatarUrl ??
       payload.identityUser?.avatar ??
       payload.identityUser?.profileImage ??
       payload.identityUser?.picture ??
+      payload.IdentityUser?.avatarUrl ??
+      payload.IdentityUser?.avatar ??
+      payload.IdentityUser?.profileImage ??
+      payload.IdentityUser?.picture ??
       "";
+    this.isOnline = Boolean(
+      payload.isOnline ??
+      payload.IsOnline ??
+      payload.identityUser?.isOnline
+    );
   }
 
   get displayName() {
@@ -21,21 +37,47 @@ export class ChatParticipantDto {
 
 export class ChatMessageDto {
   constructor(payload = {}) {
-    this.id = payload.id ?? "";
-    this.content = payload.content ?? "";
-    this.isRead = Boolean(payload.isRead);
-    this.creationTime = payload.creationTime ?? null;
-    this.chatId = payload.chatId ?? payload.chat?.id ?? null;
+    const normalizeId = (value) => {
+      if (value === null || typeof value === "undefined") return "";
+      return value.toString();
+    };
+
+    this.id = normalizeId(
+      payload.id ??
+      payload.Id ??
+      payload.messageId ??
+      payload.MessageId
+    );
+    this.content = payload.content ?? payload.Content ?? "";
+    this.isRead = Boolean(payload.isRead ?? payload.IsRead);
+    this.creationTime = payload.creationTime ?? payload.CreationTime ?? null;
+    this.chatId = normalizeId(
+      payload.chatId ??
+      payload.ChatId ??
+      payload.chat?.id ??
+      payload.Chat?.Id
+    );
     
-    if (payload.sender && typeof payload.sender === 'object') {
-      this.sender = new ChatParticipantDto(payload.sender);
-    } else if (payload.senderId) {
-      this.sender = new ChatParticipantDto({ id: payload.senderId });
+    const senderPayload =
+      payload.sender ??
+      payload.Sender ??
+      (payload.senderId || payload.SenderId
+        ? { id: payload.senderId ?? payload.SenderId }
+        : null);
+
+    if (senderPayload && typeof senderPayload === "object") {
+      this.sender = new ChatParticipantDto(senderPayload);
     } else {
       this.sender = null;
     }
-    
-    this.senderId = this.sender?.id || payload.senderId || "";
+
+    this.senderId = normalizeId(
+      this.sender?.id ||
+      payload.senderId ||
+      payload.SenderId ||
+      payload.sender?.id ||
+      payload.Sender?.Id
+    );
   }
 }
 

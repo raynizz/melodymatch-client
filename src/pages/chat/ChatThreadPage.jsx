@@ -12,7 +12,6 @@ import { getAccessToken } from "../../utils/token";
 import { resolveAssetUrl } from "../../utils/url";
 import { API_HOST } from "../../api/constants";
 import "./ChatThreadPage.css";
-import { set } from "zod";
 
 const hubUrl = `${API_HOST.replace(/\/$/, "")}/hubs/chat`;
 
@@ -44,8 +43,19 @@ export default function ChatThreadPage() {
 
   const connectionRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+  const companionIdRef = useRef(null);
   const bottomRef = useRef(null);
   const messagesContainerRef = useRef(null);
+  const chatIdKey = useMemo(() => chatId?.toString() ?? "", [chatId]);
+  const extractChatId = useCallback((payload) => {
+    const raw =
+      payload?.chatId ??
+      payload?.ChatId ??
+      payload?.chat?.id ??
+      payload?.Chat?.Id ??
+      null;
+    return raw === null || typeof raw === "undefined" ? "" : raw.toString();
+  }, []);
 
   const melodyMatchUserId = currentMelodyUser?.id;
 
@@ -56,6 +66,17 @@ export default function ChatThreadPage() {
 
   const companionDisplayName = companion?.displayName || t("chats.labels.fallbackName");
   const companionAvatar = resolveAssetUrl(companion?.avatarUrl);
+
+  useEffect(() => {
+    companionIdRef.current = companion?.id ?? null;
+    setCompanionOnline(Boolean(companion?.isOnline));
+  }, [companion]);
+
+  const isCompanionTyping = typingUsers.size > 0;
+  const companionIdValue = useMemo(
+    () => (companionIdRef.current ?? "").toString(),
+    [companion]
+  );
 
   const scrollToBottom = useCallback(() => {
     requestAnimationFrame(() => {
@@ -141,13 +162,14 @@ export default function ChatThreadPage() {
     hydrateMessages(null);
 
     connection.on("ReceiveMessage", (message) => {
-      if (message.chatId !== chatId) return;
+      const payloadChatId = extractChatId(message);
+      if (payloadChatId !== chatIdKey) return;
       
       const messageDto = new ChatMessageDto(message);
       
       setMessages((prev) => {
-        const filtered = prev.filter((msg) => !msg.id.startsWith("temp-"));
-        if (filtered.some((msg) => msg.id === messageDto.id)) {
+        const filtered = prev.filter((msg) => !String(msg.id).startsWith("temp-"));
+        if (messageDto.id && filtered.some((msg) => msg.id === messageDto.id)) {
           return filtered;
         }
         return [...filtered, messageDto];
@@ -170,21 +192,22 @@ export default function ChatThreadPage() {
     });
 
     connection.on("MessagesRead", ({ chatId: payloadChatId, messageIds }) => {
-      if (payloadChatId !== chatId) return;
+      if ((payloadChatId ?? "").toString() !== chatIdKey) return;
+      const readIds = new Set((messageIds ?? []).map((id) => id?.toString?.() ?? id));
       setMessages((prev) =>
         prev.map((msg) =>
-          messageIds.includes(msg.id) ? { ...msg, isRead: true } : msg
+          readIds.has(msg.id) ? { ...msg, isRead: true } : msg
         )
       );
     });
 
     connection.on("UserTyping", ({ chatId: payloadChatId, userId }) => {
-      if (payloadChatId !== chatId || userId === identityUserId) return;
+      if ((payloadChatId ?? "").toString() !== chatIdKey || userId === identityUserId) return;
       setTypingUsers((prev) => new Set([...prev, userId]));
     });
 
     connection.on("UserStoppedTyping", ({ chatId: payloadChatId, userId }) => {
-      if (payloadChatId !== chatId) return;
+      if ((payloadChatId ?? "").toString() !== chatIdKey) return;
       setTypingUsers((prev) => {
         const next = new Set(prev);
         next.delete(userId);
@@ -192,20 +215,26 @@ export default function ChatThreadPage() {
       });
     });
 
-    connection.on("UserOnline", ({ userId }) => {
-      if (companion && userId === companion.id) {
+    const extractUserId = (payload) => {
+      const value = payload?.userId ?? payload?.UserId ?? payload;
+      return value === null || typeof value === "undefined" ? "" : value.toString();
+    };
+
+    connection.on("UserOnline", (payload) => {
+      if (extractUserId(payload) === (companionIdRef.current ?? "").toString()) {
         setCompanionOnline(true);
       }
     });
 
-    connection.on("UserOffline", ({ userId }) => {
-      if (companion && userId === companion.id) {
+    connection.on("UserOffline", (payload) => {
+      if (extractUserId(payload) === (companionIdRef.current ?? "").toString()) {
         setCompanionOnline(false);
       }
     });
 
     connection.on("MessageUpdated", (message) => {
-      if (!message || message.chatId !== chatId) return;
+      const payloadChatId = extractChatId(message);
+      if (!message || payloadChatId !== chatIdKey) return;
       const updated = new ChatMessageDto(message);
       setMessages((prev) =>
         prev.map((msg) => (msg.id === updated.id ? updated : msg))
@@ -216,9 +245,9 @@ export default function ChatThreadPage() {
     });
 
     connection.on("MessageDeleted", (payload) => {
-      const payloadChatId = payload?.chatId ?? payload?.ChatId;
+      const payloadChatId = extractChatId(payload);
       const messageId = payload?.messageId ?? payload?.id ?? payload?.MessageId;
-      if (!messageId || payloadChatId !== chatId) return;
+      if (!messageId || payloadChatId !== chatIdKey) return;
       setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
       if (editingMessageId === messageId) {
         cancelEditing();
@@ -262,7 +291,63 @@ export default function ChatThreadPage() {
       setTypingUsers(new Set());
       connectionRef.current = null;
     };
-  }, [chatId, hydrateMessages, identityUserId, isAuthenticated, scrollToBottom, t]);
+  }, [chatIdKey, extractChatId, hydrateMessages, identityUserId, isAuthenticated, scrollToBottom, t]);
+
+  useEffect(() => {
+    if (!isConnected || !connectionRef.current || !chatIdKey) return;
+
+    const connection = connectionRef.current;
+
+    const join = async () => {
+      try {
+        await connection.invoke("JoinChat", chatIdKey);
+      } catch (err) {
+        console.warn("JoinChat failed or not supported", err);
+      }
+    };
+
+    join();
+
+    return () => {
+      if (connection.state === signalR.HubConnectionState.Connected) {
+        connection.invoke("LeaveChat", chatIdKey).catch(() => {});
+      }
+    };
+  }, [chatIdKey, isConnected]);
+
+  useEffect(() => {
+    if (!isConnected || !connectionRef.current) return;
+    const targetId = companionIdRef.current;
+    if (!targetId) return;
+    let active = true;
+
+    const fetchStatus = async () => {
+      try {
+        const result = await connectionRef.current.invoke("IsUserOnline", targetId);
+        if (active) setCompanionOnline(Boolean(result));
+        return;
+      } catch (err) {
+        console.warn("IsUserOnline failed, falling back to GetOnlineUsers", err);
+      }
+
+      try {
+        const onlineUsers = await connectionRef.current.invoke("GetOnlineUsers");
+        if (!active) return;
+        const ids = Array.isArray(onlineUsers)
+          ? onlineUsers.map((id) => id?.toString?.() ?? id).filter(Boolean)
+          : [];
+        setCompanionOnline(ids.includes(targetId.toString()));
+      } catch (err) {
+        console.warn("GetOnlineUsers failed", err);
+      }
+    };
+
+    fetchStatus();
+
+    return () => {
+      active = false;
+    };
+  }, [companionIdValue, isConnected]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -390,11 +475,22 @@ export default function ChatThreadPage() {
                 ) : (
                   <span>{companionDisplayName[0] ?? "M"}</span>
                 )}
+                <span
+                  className={`chat-thread__status-dot ${companionOnline ? "is-online" : ""}`}
+                  title={companionOnline ? t("chats.thread.online") : t("chats.thread.offline")}
+                />
+                {isCompanionTyping && (
+                  <span className="chat-thread__typing-dot" title={t("chats.thread.typing")}>•</span>
+                )}
               </div>
               <div>
                 <p className="chat-thread__title">{companionDisplayName}</p>
                 <p className="chat-thread__subtitle">
-                  {companionOnline ? t("chats.thread.online") : t("chats.thread.offline")}
+                  {isCompanionTyping
+                    ? t("chats.thread.typing")
+                    : companionOnline
+                      ? t("chats.thread.online")
+                      : t("chats.thread.offline")}
                 </p>
               </div>
             </div>
@@ -440,13 +536,6 @@ export default function ChatThreadPage() {
                 </div>
               );
             })
-          )}
-          {typingUsers.size > 0 && (
-            <div className="typing-indicator">
-              <span className="dot" />
-              <span className="dot" />
-              <span className="dot" />
-            </div>
           )}
           <div ref={bottomRef} />
         </div>
