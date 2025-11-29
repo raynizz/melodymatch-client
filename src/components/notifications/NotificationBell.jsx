@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import {
   PiArrowClockwiseBold,
@@ -70,10 +71,16 @@ export default function NotificationBell({ isAuthenticated }) {
   const togglePanel = () => {
     if (!isAuthenticated) return;
     setIsOpen((prev) => !prev);
-    if (!isOpen) {
-      refresh();
-    }
   };
+
+  useEffect(() => {
+    if (!isOpen || !isAuthenticated) return;
+    const run = async () => {
+      await refresh();
+      await markAllRead();
+    };
+    run();
+  }, [isOpen, isAuthenticated, markAllRead, refresh]);
 
   const handleMarkRead = (notificationId) => {
     markAsRead(notificationId);
@@ -95,84 +102,95 @@ export default function NotificationBell({ isAuthenticated }) {
         )}
       </button>
 
-      {isOpen && (
-        <div className="notification-panel" role="dialog" aria-modal="false">
-          <div className="notification-panel__head">
-            <div>
-              <p className="notification-panel__title">
-                {t("notifications.title")}
-              </p>
-              <p className="notification-panel__subtitle">
-                {unreadCount > 0
-                  ? t("notifications.unreadCount", { count: unreadCount })
-                  : t("notifications.allCaughtUp")}
-              </p>
-            </div>
-            <div className="notification-panel__actions">
-              <button
-                type="button"
-                className="notification-panel__icon"
-                onClick={refresh}
-                aria-label={t("notifications.refresh")}
-              >
-                <PiArrowClockwiseBold aria-hidden />
-              </button>
-              {unreadCount > 0 && (
-                <button
-                  type="button"
-                  className="notification-panel__icon"
-                  onClick={markAllRead}
-                  aria-label={t("notifications.markAllRead")}
-                >
-                  <PiCheckBold aria-hidden />
-                </button>
-              )}
-            </div>
-          </div>
-
-          <div className="notification-panel__list">
-            {isLoading ? (
-              <p className="notification-panel__state">
-                {t("notifications.loading")}
-              </p>
-            ) : error ? (
-              <p className="notification-panel__state notification-panel__state--error">
-                {t(error)}
-              </p>
-            ) : notifications.length === 0 ? (
-              <p className="notification-panel__state">
-                {t("notifications.empty")}
-              </p>
-            ) : (
-              notifications.map((item) => (
-                <button
-                  type="button"
-                  key={item.id}
-                  className={`notification-item ${
-                    item.isRead ? "" : "is-unread"
-                  }`}
-                  onClick={() => handleMarkRead(item.id)}
-                >
-                  <div className="notification-item__title">
-                    <span>{resolveTitle(item, t)}</span>
-                    {!item.isRead && (
-                      <span className="notification-item__badge">
-                        {t("notifications.unread")}
-                      </span>
-                    )}
-                  </div>
-                  {item.message && (
-                    <p className="notification-item__message">{item.message}</p>
-                  )}
-                  <p className="notification-item__meta">
-                    {formatTime(item.creationTime, i18n.language)}
+      {isOpen &&
+        createPortal(
+          <>
+            <div
+              className="notification-overlay"
+              aria-hidden
+              onClick={() => setIsOpen(false)}
+            />
+            <div className="notification-panel" role="dialog" aria-modal="false">
+              <div className="notification-panel__head">
+                <div>
+                  <p className="notification-panel__title">
+                    {t("notifications.title")}
                   </p>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-      )}
+                  <p className="notification-panel__subtitle">
+                    {unreadCount > 0
+                      ? t("notifications.unreadCount", { count: unreadCount })
+                      : t("notifications.allCaughtUp")}
+                  </p>
+                </div>
+                <div className="notification-panel__actions">
+                  <button
+                    type="button"
+                    className="notification-panel__icon"
+                    onClick={refresh}
+                    aria-label={t("notifications.refresh")}
+                  >
+                    <PiArrowClockwiseBold aria-hidden />
+                  </button>
+                  {unreadCount > 0 && (
+                    <button
+                      type="button"
+                      className="notification-panel__icon"
+                      onClick={markAllRead}
+                      aria-label={t("notifications.markAllRead")}
+                    >
+                      <PiCheckBold aria-hidden />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="notification-panel__list">
+                {isLoading ? (
+                  <p className="notification-panel__state">
+                    {t("notifications.loading")}
+                  </p>
+                ) : error ? (
+                  <p className="notification-panel__state notification-panel__state--error">
+                    {t(error)}
+                  </p>
+                ) : notifications.length === 0 ? (
+                  <p className="notification-panel__state">
+                    {t("notifications.empty")}
+                  </p>
+                ) : (
+                  notifications.map((item) => (
+                    <button
+                      type="button"
+                      key={item.id}
+                      className={`notification-item ${
+                        item.isRead ? "" : "is-unread"
+                      }`}
+                      onClick={() => handleMarkRead(item.id)}
+                    >
+                      <div className="notification-item__title">
+                        <span>{resolveTitle(item, t)}</span>
+                        {!item.isRead && (
+                          <span className="notification-item__badge">
+                            {t("notifications.unread")}
+                          </span>
+                        )}
+                      </div>
+                      {item.message && (
+                        <p className="notification-item__message">
+                          {item.message}
+                        </p>
+                      )}
+                      <p className="notification-item__meta">
+                        {formatTime(item.creationTime, i18n.language)}
+                      </p>
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          </>,
+          document.body
+        )}
     </div>
   );
 }

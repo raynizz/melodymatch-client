@@ -53,12 +53,14 @@ export function useNotifications({ enabled = true } = {}) {
     connection.on("ReceiveNotification", (payload) => {
       const notification = new NotificationDto(payload);
       setNotifications((prev) => {
-        const next = [notification, ...prev.filter((n) => n.id !== notification.id)];
-        return next.slice(0, MAX_CACHED);
+        const next = [notification, ...prev.filter((n) => n.id !== notification.id)].slice(
+          0,
+          MAX_CACHED
+        );
+        const unreadTotal = next.filter((item) => !item.isRead).length;
+        setUnreadCount(unreadTotal);
+        return next;
       });
-      if (!notification.isRead) {
-        setUnreadCount((count) => count + 1);
-      }
     });
 
     try {
@@ -101,17 +103,14 @@ export function useNotifications({ enabled = true } = {}) {
 
   const markAsRead = useCallback(async (notificationId) => {
     if (!notificationId) return;
-    let wasUnread = false;
-    setNotifications((prev) =>
-      prev.map((item) => {
-        if (item.id !== notificationId) return item;
-        wasUnread = !item.isRead;
-        return { ...item, isRead: true };
-      })
-    );
-    if (wasUnread) {
-      setUnreadCount((count) => Math.max(0, count - 1));
-    }
+    setNotifications((prev) => {
+      const next = prev.map((item) =>
+        item.id === notificationId ? { ...item, isRead: true } : item
+      );
+      const unreadTotal = next.filter((item) => !item.isRead).length;
+      setUnreadCount(unreadTotal);
+      return next;
+    });
 
     try {
       await markNotificationAsRead(notificationId);
@@ -121,8 +120,11 @@ export function useNotifications({ enabled = true } = {}) {
   }, []);
 
   const markAllRead = useCallback(async () => {
-    setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })));
-    setUnreadCount(0);
+    setNotifications((prev) => {
+      const next = prev.map((item) => ({ ...item, isRead: true }));
+      setUnreadCount(0);
+      return next;
+    });
     try {
       await markAllNotificationsAsRead();
     } catch (err) {
