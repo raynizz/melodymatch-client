@@ -38,17 +38,34 @@
   border: 2px solid var(--surface);
 }
 
+.notification-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 199;
+}
+
 .notification-panel {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 10px);
-  width: min(420px, 90vw);
+  position: fixed;
+  top: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(520px, 96vw);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: 0 12px 40px rgba(15, 23, 42, 0.22);
-  z-index: 80;
+  z-index: 200;
   overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .notification-panel {
+    right: 16px;
+    left: auto;
+    transform: none;
+    width: min(480px, 40vw);
+  }
 }
 
 .notification-panel__head {
