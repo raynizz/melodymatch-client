@@ -41,6 +41,7 @@ import { MelodyMatchUserDto } from "../../dto/melodyMatchUser/MelodyMatchUserDto
 import { UserProfileDto } from "../../dto/userProfile/UserProfileDto";
 import { GENDER_OPTIONS, Gender } from "../../types/gender";
 import { INTEREST_OPTIONS } from "../../types/interests";
+import { Roles } from "../../types/roles";
 import "./ProfilePage.css";
 
 const defaultFormValues = {
@@ -132,8 +133,15 @@ function parseNumber(value) {
 export default function ProfilePage() {
   const { t } = useTranslation();
   const schema = useMemo(() => createProfileEditorSchema(t), [t]);
-  const { identityUserId, isAuthenticated, refreshCurrentMelodyUser, user } =
-    useAuth();
+  const {
+    identityUserId,
+    isAuthenticated,
+    refreshCurrentMelodyUser,
+    user,
+    hasRole,
+  } = useAuth();
+  const isDater = hasRole?.(Roles.Dater);
+  const isAdmin = hasRole?.(Roles.Admin);
   const [identityUser, setIdentityUser] = useState(IdentityUserDto.empty());
   const [melodyMatchUser, setMelodyMatchUser] = useState(
     MelodyMatchUserDto.empty()
@@ -361,17 +369,20 @@ export default function ProfilePage() {
         }
       }
 
-      const melodyResponse = await getMelodyMatchUserByIdentityUserId(
-        identityUserId
-      ).catch((error) => {
-        if (error?.response?.status === 404) {
-          return MelodyMatchUserDto.empty();
-        }
-        throw error;
-      });
+      let melodyResponse = MelodyMatchUserDto.empty();
+      if (isDater) {
+        melodyResponse = await getMelodyMatchUserByIdentityUserId(
+          identityUserId
+        ).catch((error) => {
+          if (error?.response?.status === 404) {
+            return MelodyMatchUserDto.empty();
+          }
+          throw error;
+        });
+      }
 
       let profileResponse = UserProfileDto.empty();
-      if (melodyResponse?.id) {
+      if (melodyResponse?.id && isDater) {
         profileResponse = await getUserProfileByMelodyMatchUserId(
           melodyResponse.id
         ).catch((error) => {
@@ -394,7 +405,7 @@ export default function ProfilePage() {
     } finally {
       setIsFetching(false);
     }
-  }, [identityFallback, identityUserId, reset, t]);
+  }, [identityFallback, identityUserId, isDater, reset, t]);
 
   useEffect(() => {
     if (identityUserId) {
@@ -434,33 +445,38 @@ export default function ProfilePage() {
         }
       }
 
-      const updatedMelody = await upsertMelodyMatchUser({
-        id: melodyMatchUser?.id ?? undefined,
-        identityUserId,
-        gender: Number(formData.melody.gender),
-        avatarUrl: formData.melody.avatarUrl,
-      });
+      if (isDater) {
+        const updatedMelody = await upsertMelodyMatchUser({
+          id: melodyMatchUser?.id ?? undefined,
+          identityUserId,
+          gender: Number(formData.melody.gender),
+          avatarUrl: formData.melody.avatarUrl,
+        });
 
-      const parsedProfile = await upsertUserProfile({
-        id: userProfile?.id ?? undefined,
-        melodyMatchUserId: updatedMelody.id,
-        age: parseNumber(formData.profile.age),
-        bio: formData.profile.bio,
-        location: formData.profile.location,
-        preferredGenders: formData.profile.preferredGenders ?? [],
-        preferredMinAge: parseNumber(formData.profile.preferredMinAge),
-        preferredMaxAge: parseNumber(formData.profile.preferredMaxAge),
-        profilePhotoUrls: formData.profile.profilePhotoUrls ?? [],
-        interests: (formData.profile.interests ?? [])
-          .map((value) => Number(value))
-          .filter((value) => Number.isInteger(value)),
-      });
+        const parsedProfile = await upsertUserProfile({
+          id: userProfile?.id ?? undefined,
+          melodyMatchUserId: updatedMelody.id,
+          age: parseNumber(formData.profile.age),
+          bio: formData.profile.bio,
+          location: formData.profile.location,
+          preferredGenders: formData.profile.preferredGenders ?? [],
+          preferredMinAge: parseNumber(formData.profile.preferredMinAge),
+          preferredMaxAge: parseNumber(formData.profile.preferredMaxAge),
+          profilePhotoUrls: formData.profile.profilePhotoUrls ?? [],
+          interests: (formData.profile.interests ?? [])
+            .map((value) => Number(value))
+            .filter((value) => Number.isInteger(value)),
+        });
+
+        setMelodyMatchUser(updatedMelody);
+        setUserProfile(parsedProfile);
+        setProfilePhotos(parsedProfile.profilePhotos ?? []);
+        reset(buildFormValues(updatedIdentity, updatedMelody, parsedProfile));
+      } else {
+        reset(buildFormValues(updatedIdentity, melodyMatchUser, userProfile));
+      }
 
       setIdentityUser(updatedIdentity);
-      setMelodyMatchUser(updatedMelody);
-      setUserProfile(parsedProfile);
-      setProfilePhotos(parsedProfile.profilePhotos ?? []);
-      reset(buildFormValues(updatedIdentity, updatedMelody, parsedProfile));
 
       await refreshCurrentMelodyUser();
 
@@ -480,6 +496,10 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (!isDater && !isAdmin) {
+    return <Navigate to="/" replace />;
   }
 
   return (
@@ -568,205 +588,209 @@ export default function ProfilePage() {
               </div>
             </section>
 
-            <section className="profile-card">
-              <header>
-                <h2>{t("profile.melody.title")}</h2>
-                <p>{t("profile.melody.description")}</p>
-              </header>
+            {isDater && (
+              <>
+                <section className="profile-card">
+                  <header>
+                    <h2>{t("profile.melody.title")}</h2>
+                    <p>{t("profile.melody.description")}</p>
+                  </header>
 
-              <GenderSelect
-                id="melody-gender"
-                label={t("profile.melody.genderLabel")}
-                options={genderOptions}
-                value={melodyGender}
-                onChange={(selectedValue) =>
-                  setValue("melody.gender", selectedValue, {
-                    shouldDirty: true,
-                    shouldTouch: true,
-                  })
-                }
-                error={errors.melody?.gender?.message}
-              />
+                  <GenderSelect
+                    id="melody-gender"
+                    label={t("profile.melody.genderLabel")}
+                    options={genderOptions}
+                    value={melodyGender}
+                    onChange={(selectedValue) =>
+                      setValue("melody.gender", selectedValue, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      })
+                    }
+                    error={errors.melody?.gender?.message}
+                  />
 
-              <input type="hidden" {...register("melody.avatarUrl")} />
+                  <input type="hidden" {...register("melody.avatarUrl")} />
 
-              <div className="profile-avatar-upload">
-                <div className="profile-avatar-upload__preview">
-                  {avatarDisplay ? (
-                    <img
-                      src={avatarDisplay}
-                      alt={t("profile.melody.avatarPreviewAlt")}
+                  <div className="profile-avatar-upload">
+                    <div className="profile-avatar-upload__preview">
+                      {avatarDisplay ? (
+                        <img
+                          src={avatarDisplay}
+                          alt={t("profile.melody.avatarPreviewAlt")}
+                        />
+                      ) : (
+                        <PiUserCircleBold aria-hidden />
+                      )}
+                    </div>
+                    <div className="profile-avatar-upload__body">
+                      <p>{t("profile.melody.avatarHelper")}</p>
+                      <label className="upload-button">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleAvatarUpload}
+                          disabled={avatarUploading}
+                        />
+                        {avatarUploading
+                          ? t("profile.melody.uploadLoading")
+                          : t("profile.melody.uploadCta")}
+                      </label>
+                      {errors.melody?.avatarUrl?.message && (
+                        <p className="form-error" role="alert">
+                          {errors.melody.avatarUrl.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </section>
+
+                <section className="profile-card">
+                  <header>
+                    <h2>{t("profile.userProfile.title")}</h2>
+                    <p>{t("profile.userProfile.description")}</p>
+                  </header>
+
+                  <div className="profile-grid">
+                    <FormField
+                      id="profile-age"
+                      label={t("profile.userProfile.fields.age")}
+                      type="number"
+                      min="18"
+                      error={errors.profile?.age?.message}
+                      {...register("profile.age")}
                     />
-                  ) : (
-                    <PiUserCircleBold aria-hidden />
-                  )}
-                </div>
-                <div className="profile-avatar-upload__body">
-                  <p>{t("profile.melody.avatarHelper")}</p>
-                  <label className="upload-button">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarUpload}
-                      disabled={avatarUploading}
+
+                    <LocationField
+                      id="profile-location"
+                      label={t("profile.userProfile.fields.location")}
+                      placeholder={t("profile.userProfile.fields.locationPlaceholder")}
+                      error={errors.profile?.location?.message}
+                      detectDisabled={isSaving || isFetching}
+                      onDetected={(cityName) => {
+                        setValue("profile.location", cityName, {
+                          shouldDirty: true,
+                          shouldTouch: true,
+                        });
+                      }}
+                      {...register("profile.location")}
                     />
-                    {avatarUploading
-                      ? t("profile.melody.uploadLoading")
-                      : t("profile.melody.uploadCta")}
-                  </label>
-                  {errors.melody?.avatarUrl?.message && (
-                    <p className="form-error" role="alert">
-                      {errors.melody.avatarUrl.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </section>
 
-            <section className="profile-card">
-              <header>
-                <h2>{t("profile.userProfile.title")}</h2>
-                <p>{t("profile.userProfile.description")}</p>
-              </header>
+                    <FormField
+                      id="profile-preferredMinAge"
+                      label={t("profile.userProfile.fields.preferredMinAge")}
+                      type="number"
+                      min="18"
+                      error={errors.profile?.preferredMinAge?.message}
+                      {...register("profile.preferredMinAge")}
+                    />
 
-              <div className="profile-grid">
-                <FormField
-                  id="profile-age"
-                  label={t("profile.userProfile.fields.age")}
-                  type="number"
-                  min="18"
-                  error={errors.profile?.age?.message}
-                  {...register("profile.age")}
-                />
+                    <FormField
+                      id="profile-preferredMaxAge"
+                      label={t("profile.userProfile.fields.preferredMaxAge")}
+                      type="number"
+                      min="18"
+                      error={errors.profile?.preferredMaxAge?.message}
+                      {...register("profile.preferredMaxAge")}
+                    />
+                  </div>
 
-                <LocationField
-                  id="profile-location"
-                  label={t("profile.userProfile.fields.location")}
-                  placeholder={t("profile.userProfile.fields.locationPlaceholder")}
-                  error={errors.profile?.location?.message}
-                  detectDisabled={isSaving || isFetching}
-                  onDetected={(cityName) => {
-                    setValue("profile.location", cityName, {
-                      shouldDirty: true,
-                      shouldTouch: true,
-                    });
-                  }}
-                  {...register("profile.location")}
-                />
+                  <TextareaField
+                    id="profile-bio"
+                    label={t("profile.userProfile.fields.bio")}
+                    rows={4}
+                    placeholder={t("profile.userProfile.fields.bioPlaceholder")}
+                    error={errors.profile?.bio?.message}
+                    {...register("profile.bio")}
+                  />
 
-                <FormField
-                  id="profile-preferredMinAge"
-                  label={t("profile.userProfile.fields.preferredMinAge")}
-                  type="number"
-                  min="18"
-                  error={errors.profile?.preferredMinAge?.message}
-                  {...register("profile.preferredMinAge")}
-                />
+                  <PreferredGendersSelect
+                    id="preferred-genders"
+                    label={t("profile.userProfile.fields.preferredGenders")}
+                    options={genderOptions}
+                    value={preferredGenders}
+                    onChange={(selectedValues) => {
+                      setValue("profile.preferredGenders", selectedValues, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      });
+                    }}
+                    error={errors.profile?.preferredGenders?.message}
+                  />
 
-                <FormField
-                  id="profile-preferredMaxAge"
-                  label={t("profile.userProfile.fields.preferredMaxAge")}
-                  type="number"
-                  min="18"
-                  error={errors.profile?.preferredMaxAge?.message}
-                  {...register("profile.preferredMaxAge")}
-                />
-              </div>
+                  <InterestsSelect
+                    id="profile-interests"
+                    label={t("profile.userProfile.fields.interests")}
+                    helper={t("profile.userProfile.fields.interestsHelper")}
+                    options={interestOptions}
+                    value={selectedInterests}
+                    onChange={(selectedValues) => {
+                      setValue("profile.interests", selectedValues, {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      });
+                    }}
+                    disabled={isSaving || isFetching}
+                    error={errors.profile?.interests?.message}
+                  />
 
-              <TextareaField
-                id="profile-bio"
-                label={t("profile.userProfile.fields.bio")}
-                rows={4}
-                placeholder={t("profile.userProfile.fields.bioPlaceholder")}
-                error={errors.profile?.bio?.message}
-                {...register("profile.bio")}
-              />
+                  <div className="profile-photo-manager">
+                    <div className="profile-photo-manager__header">
+                      <div>
+                        <p className="profile-photo-manager__title">
+                          {t("profile.userProfile.fields.profilePhotoUrls")}
+                        </p>
+                        {!userProfile?.id && (
+                          <p className="profile-photo-manager__hint">
+                            {t("profile.userProfile.photoUploadDisabled")}
+                          </p>
+                        )}
+                      </div>
+                      <label className="upload-button">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleProfilePhotoUpload}
+                          disabled={
+                            photoUploading ||
+                            !userProfile?.id ||
+                            profilePhotos.length >= 3
+                          }
+                        />
+                        {photoUploading
+                          ? t("profile.userProfile.photoUploadLoading")
+                          : t("profile.userProfile.photoUploadCta")}
+                      </label>
+                    </div>
 
-              <PreferredGendersSelect
-                id="preferred-genders"
-                label={t("profile.userProfile.fields.preferredGenders")}
-                options={genderOptions}
-                value={preferredGenders}
-                onChange={(selectedValues) => {
-                  setValue("profile.preferredGenders", selectedValues, {
-                    shouldDirty: true,
-                    shouldTouch: true,
-                  });
-                }}
-                error={errors.profile?.preferredGenders?.message}
-              />
-
-              <InterestsSelect
-                id="profile-interests"
-                label={t("profile.userProfile.fields.interests")}
-                helper={t("profile.userProfile.fields.interestsHelper")}
-                options={interestOptions}
-                value={selectedInterests}
-                onChange={(selectedValues) => {
-                  setValue("profile.interests", selectedValues, {
-                    shouldDirty: true,
-                    shouldTouch: true,
-                  });
-                }}
-                disabled={isSaving || isFetching}
-                error={errors.profile?.interests?.message}
-              />
-
-              <div className="profile-photo-manager">
-                <div className="profile-photo-manager__header">
-                  <div>
-                    <p className="profile-photo-manager__title">
-                      {t("profile.userProfile.fields.profilePhotoUrls")}
-                    </p>
-                    {!userProfile?.id && (
-                      <p className="profile-photo-manager__hint">
-                        {t("profile.userProfile.photoUploadDisabled")}
+                    {profilePhotos.length === 0 ? (
+                      <p className="profile-photo-manager__empty">
+                        {t("profile.userProfile.photosEmpty")}
                       </p>
+                    ) : (
+                      <div className="profile-photo-grid">
+                        {profilePhotos.map((photo) => (
+                          <figure
+                            key={photo.id ?? photo.url}
+                            className="profile-photo-card"
+                          >
+                            <img src={resolveAssetUrl(photo.url)} alt="" />
+                            <button
+                              type="button"
+                              className="profile-photo-card__remove"
+                              onClick={() => removeProfilePhoto(photo)}
+                              aria-label={t("profile.userProfile.removePhoto")}
+                            >
+                              ×
+                            </button>
+                          </figure>
+                        ))}
+                      </div>
                     )}
                   </div>
-                  <label className="upload-button">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleProfilePhotoUpload}
-                      disabled={
-                        photoUploading ||
-                        !userProfile?.id ||
-                        profilePhotos.length >= 3
-                      }
-                    />
-                    {photoUploading
-                      ? t("profile.userProfile.photoUploadLoading")
-                      : t("profile.userProfile.photoUploadCta")}
-                  </label>
-                </div>
-
-                {profilePhotos.length === 0 ? (
-                  <p className="profile-photo-manager__empty">
-                    {t("profile.userProfile.photosEmpty")}
-                  </p>
-                ) : (
-                  <div className="profile-photo-grid">
-                    {profilePhotos.map((photo) => (
-                      <figure
-                        key={photo.id ?? photo.url}
-                        className="profile-photo-card"
-                      >
-                        <img src={resolveAssetUrl(photo.url)} alt="" />
-                        <button
-                          type="button"
-                          className="profile-photo-card__remove"
-                          onClick={() => removeProfilePhoto(photo)}
-                          aria-label={t("profile.userProfile.removePhoto")}
-                        >
-                          ×
-                        </button>
-                      </figure>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </section>
+                </section>
+              </>
+            )}
 
             <div className="profile-actions">
               <Button

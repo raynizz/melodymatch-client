@@ -11,6 +11,7 @@ import { ChatMessageDto } from "../../dto/chat/ChatSummaryDto";
 import { getAccessToken } from "../../utils/token";
 import { resolveAssetUrl } from "../../utils/url";
 import { API_HOST } from "../../api/constants";
+import { Roles } from "../../types/roles";
 import "./ChatThreadPage.css";
 
 const hubUrl = `${API_HOST.replace(/\/$/, "")}/hubs/chat`;
@@ -26,7 +27,8 @@ export default function ChatThreadPage() {
   const { chatId } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isAuthenticated, identityUserId, currentMelodyUser } = useAuth();
+  const { isAuthenticated, identityUserId, currentMelodyUser, hasRole } =
+    useAuth();
 
   const [chat, setChat] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -452,6 +454,10 @@ export default function ChatThreadPage() {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (!hasRole?.(Roles.Dater)) {
+    return <Navigate to="/" replace />;
   }
 
   return (
