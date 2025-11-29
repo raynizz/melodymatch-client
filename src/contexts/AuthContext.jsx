@@ -42,24 +42,11 @@ function extractIdentityUserName(decodedToken) {
 }
 
 function extractRoles(decoded) {
-    if (!decoded) return [];
-    const rawRoles =
-        decoded.role ??
-        decoded.roles ??
-        decoded.roleNames ??
-        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
-
-    if (!rawRoles) return [];
-
-    if (Array.isArray(rawRoles)) {
-        return rawRoles;
+    if (!decoded?.role) {
+        return [];
     }
 
-    if (typeof rawRoles === "string") {
-        return rawRoles.split(",").map((item) => item.trim()).filter(Boolean);
-    }
-
-    return [];
+    return Array.isArray(decoded.role) ? decoded.role : [decoded.role];
 }
 
 function readAuthSnapshot() {
@@ -137,13 +124,7 @@ export function AuthProvider({ children }) {
     }, []);
 
     const hasRole = useCallback(
-        (role) => {
-            if (!role) return false;
-            const target = role.toString().toLowerCase();
-            return authState.roles.some(
-                (item) => (item ?? "").toString().toLowerCase() === target
-            );
-        },
+        (role) => authState.roles.includes(role),
         [authState.roles]
     );
 

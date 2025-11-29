@@ -13,9 +13,8 @@ export class UserProfileDto {
     this.preferredGenders = payload.preferredGenders ?? [];
     this.preferredMinAge = payload.preferredMinAge ?? null;
     this.preferredMaxAge = payload.preferredMaxAge ?? null;
-    this.interests = payload.interests ?? payload.Interests ?? [];
-    const photos = payload.profilePhotos ?? payload.ProfilePhotos ?? [];
-    this.profilePhotos = photos.map((photo) => ({
+    this.interests = payload.interests ?? [];
+    this.profilePhotos = (payload.profilePhotos ?? []).map((photo) => ({
       id: photo.id ?? null,
       url: photo.url ?? "",
       isConfirmed: Boolean(photo.isConfirmed),

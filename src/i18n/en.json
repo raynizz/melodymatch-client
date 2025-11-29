@@ -24,7 +24,6 @@
     "feed": "Feed",
     "likes": "Likes",
     "chats": "Chats",
-    "adminComplaints": "Complaints",
     "login": "Login",
     "register": "Join now"
   },
@@ -394,82 +393,6 @@
       "locationLength": "Location must be at most 120 characters.",
       "min": "Value must be at least {{min}}.",
       "phone": "Enter a valid phone number, e.g. +380441112233."
-    }
-  },
-  "notifications": {
-    "open": "Open notifications",
-    "title": "Notifications",
-    "unread": "Unread",
-    "unreadCount": "{{count}} unread",
-    "allCaughtUp": "All caught up",
-    "loading": "Loading notifications...",
-    "refresh": "Refresh",
-    "markAllRead": "Mark all as read",
-    "empty": "No notifications yet.",
-    "types": {
-      "complaintResolved": "Complaint resolved - user banned",
-      "complaintDismissed": "Complaint dismissed",
-      "userBanned": "User banned",
-      "general": "Notification"
-    },
-    "loadError": "Unable to load notifications."
-  },
-  "adminComplaints": {
-    "eyebrow": "Moderation",
-    "title": "User complaints",
-    "subtitle": "Review reports, ban offenders and keep reporters in the loop.",
-    "filters": {
-      "all": "All statuses",
-      "status": "Status",
-      "apply": "Apply filters",
-      "refresh": "Refresh list"
-    },
-    "status": {
-      "sent": "New",
-      "inProgress": "In progress",
-      "resolved": "Resolved",
-      "dismissed": "Dismissed"
-    },
-    "listAria": "Complaints list",
-    "empty": "No complaints match your filters.",
-    "complaintId": "Case {{id}}",
-    "details": {
-      "reporter": "Reporter",
-      "reportedUser": "Reported user",
-      "reporterLabel": "Reported by {{reporter}}",
-      "reason": "Reason",
-      "submitted": "Submitted",
-      "age": "Age",
-      "location": "Location",
-      "bio": "Bio",
-      "noReason": "No reason provided",
-      "noBio": "No bio provided",
-      "noPhotos": "No profile photos",
-      "unknown": "Unknown",
-      "reporterValue": "From: {{reporter}}",
-      "reportedValue": "About: {{reported}}"
-    },
-    "actions": {
-      "banReason": "Ban reason",
-      "banPlaceholder": "Describe why this account is banned",
-      "banSubmit": "Ban user",
-      "dismiss": "Dismiss complaint",
-      "markInProgress": "Mark in progress",
-      "markPending": "Mark as new",
-      "unban": "Unban user",
-      "processing": "Processing...",
-      "resolutionNote": "Resolution note",
-      "notePlaceholder": "Add context for the reporter"
-    },
-    "noSelection": "Select a complaint to review.",
-    "feedback": {
-      "successTitle": "Saved",
-      "errorTitle": "Something went wrong",
-      "banSuccess": "User banned and the reporter will be notified.",
-      "dismissSuccess": "Complaint dismissed and the reporter will be notified.",
-      "unbanSuccess": "User unbanned.",
-      "actionError": "Action failed. Try again.",
-      "loadError": "Unable to load complaints."
     }
   },
   "footer": {

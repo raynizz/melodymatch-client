@@ -10,18 +10,16 @@ import {
 } from "react-icons/pi";
 import LanguageSwitch from "../../components/language-switch/LanguageSwitch";
 import ThemeSwitch from "../../components/theme-switch/ThemeSwitch";
-import NotificationBell from "../../components/notifications/NotificationBell";
 import Button from "../../components/ui/Button";
 import { useAuth } from "../../contexts/AuthContext";
 import { resolveAssetUrl } from "../../utils/url";
-import { Roles } from "../../types/roles";
 import "./Header.css";
 
 export default function Header() {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout, currentMelodyUser, hasRole } = useAuth();
+  const { isAuthenticated, user, logout, currentMelodyUser } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,24 +32,11 @@ export default function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const navLinks = useMemo(() => {
-    const links = [
-      { key: "match", label: t("nav.feed"), to: "/match", type: "route" },
-      { key: "likes", label: t("nav.likes"), to: "/likes", type: "route" },
-      { key: "chats", label: t("nav.chats"), to: "/chats", type: "route" },
-    ];
-
-    if (hasRole?.(Roles.Admin)) {
-      links.push({
-        key: "admin-complaints",
-        label: t("nav.adminComplaints"),
-        to: "/admin/complaints",
-        type: "route",
-      });
-    }
-
-    return links;
-  }, [hasRole, t]);
+  const navLinks = [
+    { key: "match", label: t("nav.feed"), to: "/match", type: "route" },
+    { key: "likes", label: t("nav.likes"), to: "/likes", type: "route" },
+    { key: "chats", label: t("nav.chats"), to: "/chats", type: "route" },
+  ];
 
   const closeMenu = () => setIsMenuOpen(false);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
@@ -102,9 +87,6 @@ export default function Header() {
     <>
       <LanguageSwitch />
       <ThemeSwitch />
-      {isAuthenticated && (
-        <NotificationBell isAuthenticated={isAuthenticated} />
-      )}
       {isAuthenticated ? (
         <div className="app-header__user">
           <Link
