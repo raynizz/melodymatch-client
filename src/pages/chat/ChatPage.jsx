@@ -7,6 +7,7 @@ import Button from "../../components/ui/Button";
 import { useAuth } from "../../contexts/AuthContext";
 import { fetchUserChats, deleteChatById } from "../../api/chatService";
 import { resolveAssetUrl } from "../../utils/url";
+import { Roles } from "../../types/roles";
 import "./ChatPage.css";
 
 const PAGE_SIZE = 20;
@@ -185,7 +186,7 @@ function ChatSkeleton() {
 
 export default function ChatPage() {
   const { t } = useTranslation();
-  const { isAuthenticated, identityUserId } = useAuth();
+  const { isAuthenticated, identityUserId, hasRole } = useAuth();
   const navigate = useNavigate();
   const [chats, setChats] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -236,6 +237,10 @@ export default function ChatPage() {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (!hasRole?.(Roles.Dater)) {
+    return <Navigate to="/" replace />;
   }
 
   return (

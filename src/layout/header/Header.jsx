@@ -35,23 +35,31 @@ export default function Header() {
   }, []);
 
   const navLinks = useMemo(() => {
-    const links = [
-      { key: "match", label: t("nav.feed"), to: "/match", type: "route" },
-      { key: "likes", label: t("nav.likes"), to: "/likes", type: "route" },
-      { key: "chats", label: t("nav.chats"), to: "/chats", type: "route" },
-    ];
-
-    if (hasRole?.(Roles.Admin)) {
-      links.push({
-        key: "admin-complaints",
-        label: t("nav.adminComplaints"),
-        to: "/admin/complaints",
-        type: "route",
-      });
+    if (!isAuthenticated) {
+      return [];
     }
 
-    return links;
-  }, [hasRole, t]);
+    if (hasRole?.(Roles.Admin)) {
+      return [
+        {
+          key: "admin-complaints",
+          label: t("nav.adminComplaints"),
+          to: "/admin/complaints",
+          type: "route",
+        },
+      ];
+    }
+
+    if (hasRole?.(Roles.Dater)) {
+      return [
+        { key: "match", label: t("nav.feed"), to: "/match", type: "route" },
+        { key: "likes", label: t("nav.likes"), to: "/likes", type: "route" },
+        { key: "chats", label: t("nav.chats"), to: "/chats", type: "route" },
+      ];
+    }
+
+    return [];
+  }, [hasRole, isAuthenticated, t]);
 
   const closeMenu = () => setIsMenuOpen(false);
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
@@ -107,18 +115,20 @@ export default function Header() {
       )}
       {isAuthenticated ? (
         <div className="app-header__user">
-          <Link
-            to="/profile"
-            className="user-avatar"
-            aria-label={t("header.profileLink")}
-            onClick={onNavigate}
-          >
-            {profile?.avatar ? (
-              <img src={profile.avatar} alt={profile.displayName || ""} />
-            ) : (
-              <PiUserCircleBold className="user-avatar__icon" aria-hidden />
-            )}
-          </Link>
+          {(hasRole?.(Roles.Dater) || hasRole?.(Roles.Admin)) && (
+            <Link
+              to="/profile"
+              className="user-avatar"
+              aria-label={t("header.profileLink")}
+              onClick={onNavigate}
+            >
+              {profile?.avatar ? (
+                <img src={profile.avatar} alt={profile.displayName || ""} />
+              ) : (
+                <PiUserCircleBold className="user-avatar__icon" aria-hidden />
+              )}
+            </Link>
+          )}
           <Button
             variant="ghost"
             size="md"

@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Layout from "../../layout/layout/Layout";
 import { useAuth } from "../../contexts/AuthContext";
+import { Roles } from "../../types/roles";
 import MatchCard from "../../components/match/MatchCard";
 import ReactionBar from "../../components/match/ReactionBar";
 import ActionModal from "../../components/match/ActionModal";
@@ -17,7 +18,8 @@ const EXIT_ANIMATION_MS = 240;
 
 export default function MatchPage() {
   const { t } = useTranslation();
-  const { isAuthenticated, currentMelodyUser, isMelodyUserLoading } = useAuth();
+  const { isAuthenticated, currentMelodyUser, isMelodyUserLoading, hasRole } =
+    useAuth();
   const fetcher = useCallback(
     () => fetchSuggestionsForCurrentUser({ take: 10 }),
     []
@@ -174,6 +176,10 @@ export default function MatchPage() {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (!hasRole?.(Roles.Dater)) {
+    return <Navigate to="/" replace />;
   }
 
   return (
