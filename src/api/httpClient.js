@@ -1,5 +1,4 @@
 import axios from "axios";
-import i18n from "../i18n";
 import {
   API_HOST,
   AUTH_HOST,
@@ -13,6 +12,7 @@ import {
   setTokens,
   clearTokens,
 } from "../utils/token";
+import { getActiveLanguage } from "../utils/language";
 
 const authClient = axios.create({
   baseURL: AUTH_HOST,
@@ -25,8 +25,14 @@ const apiClient = axios.create({
   baseURL: API_HOST,
 });
 
-const getLanguage = () =>
-  i18n.language && i18n.language.startsWith("uk") ? "uk" : "en";
+const getLanguage = () => getActiveLanguage();
+
+authClient.interceptors.request.use((config) => {
+  const configCopy = { ...config };
+  configCopy.headers = configCopy.headers ?? {};
+  configCopy.headers["Accept-Language"] = getLanguage();
+  return configCopy;
+});
 
 apiClient.interceptors.request.use((config) => {
   const configCopy = { ...config };
