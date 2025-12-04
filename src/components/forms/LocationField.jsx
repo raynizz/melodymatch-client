@@ -1,26 +1,29 @@
 import { forwardRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { getActiveLanguage } from "../../utils/language";
 import "./LocationField.css";
 
 const buildReverseGeocodeUrl = (latitude, longitude) => {
+  const language = getActiveLanguage();
   const params = new URLSearchParams({
     format: "jsonv2",
     lat: latitude.toString(),
     lon: longitude.toString(),
     zoom: "10",
     addressdetails: "1",
-    "accept-language": "en",
+    "accept-language": language,
   });
 
   return `https://nominatim.openstreetmap.org/reverse?${params.toString()}`;
 };
 
 async function lookupCity(coords) {
+  const language = getActiveLanguage();
   const response = await fetch(
     buildReverseGeocodeUrl(coords.latitude, coords.longitude),
     {
       headers: {
-        "Accept-Language": "en",
+        "Accept-Language": language,
       },
     }
   );
@@ -45,8 +48,9 @@ async function lookupCity(coords) {
 const IP_LOOKUP_URL = "https://ipapi.co/json/";
 
 async function lookupCityByIp() {
+  const language = getActiveLanguage();
   const response = await fetch(IP_LOOKUP_URL, {
-    headers: { Accept: "application/json" },
+    headers: { Accept: "application/json", "Accept-Language": language },
   });
   if (!response.ok) {
     throw new Error("IP lookup failed");
