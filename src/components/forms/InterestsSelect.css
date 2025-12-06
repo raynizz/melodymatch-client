@@ -1,0 +1,50 @@
+.interests-select {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.interests-select__helper {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.interests-select__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.interests-select__option {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interests-select__option:hover:not(:disabled) {
+  background: rgba(118, 75, 255, 0.08);
+  border-color: var(--accent);
+}
+
+.interests-select__option--selected {
+  background: rgba(118, 75, 255, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.interests-select__option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.interests-select__option:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}

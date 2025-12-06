@@ -1,0 +1,504 @@
+{
+  "welcome": "Welcome to MelodyMatch",
+  "description": "Find people who share your music taste.",
+  "login": "Login",
+  "register": "Register",
+  "toggleTheme": "Switch theme",
+  "languageSwitch": {
+    "label": "Change interface language"
+  },
+  "header": {
+    "tagline": "Match through shared playlists",
+    "status": "Live beta",
+    "menuOpen": "Open main menu",
+    "menuClose": "Close menu",
+    "drawerTitle": "Navigate",
+    "profileLink": "Open profile settings",
+    "logout": "Sign out"
+  },
+  "nav": {
+    "aria": "Primary navigation",
+    "home": "Home",
+    "features": "Features",
+    "community": "Community",
+    "feed": "Feed",
+    "likes": "Likes",
+    "chats": "Chats",
+    "adminComplaints": "Complaints",
+    "login": "Login",
+    "register": "Join now"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Curated by resident DJs",
+      "title": "Let your taste find people who feel every beat.",
+      "description": "MelodyMatch analyses vibe signatures, nightly rituals and mood boards to introduce you to listeners you will actually click with.",
+      "primaryCta": "Create profile",
+      "secondaryCta": "Browse community moments",
+      "note": "Free forever. Takes less than a minute.",
+      "panelLabel": "Now playing",
+      "panelEyebrow": "Session mix",
+      "panelTitle": "Intimate pairing set",
+      "liveStatus": "Live sync",
+      "tracks": {
+        "twilight": {
+          "title": "Twilight FM",
+          "mood": "Midnight neo-soul pulse"
+        },
+        "club": {
+          "title": "Club Mirage",
+          "mood": "Luminous house edits"
+        },
+        "sunrise": {
+          "title": "Sunrise Bloom",
+          "mood": "Warm indie electronica"
+        }
+      }
+    },
+    "dropdown": {
+      "placeholder": "Select option",
+      "multiPlaceholder": "Select one or more options"
+    },
+    "stats": {
+      "matches": "real matches",
+      "artists": "artists indexed",
+      "events": "intimate sessions monthly"
+    },
+    "features": {
+      "eyebrow": "Crafted journey",
+      "title": "Why audiophiles stay",
+      "subtitle": "Experience-first onboarding merged with sonic chemistry scores to help you build genuine resonance.",
+      "discovery": {
+        "title": "Living discovery feed",
+        "description": "Hyper-personalized capsules curated by tempo, energy and nostalgic hooks shared by the community."
+      },
+      "rooms": {
+        "title": "Private listening rooms",
+        "description": "Spin records with future matches inside cozy rooms powered by latency-free audio streams."
+      },
+      "events": {
+        "title": "Pop-up listening events",
+        "description": "IRL salons hosted in independent venues with community curators and sonic healers."
+      },
+      "safety": {
+        "title": "Care-first safety layer",
+        "description": "Onboarding rituals, verified vibes and respectful pacing keep every connection grounded."
+      }
+    },
+    "community": {
+      "eyebrow": "Community snapshots",
+      "title": "Stories mixed every week",
+      "subtitle": "Local tastemakers highlight listeners who are turning playlists into slow friendships.",
+      "cards": {
+        "kyiv": {
+          "title": "Kyiv · Slow Burn FM",
+          "description": "Analogue R&B session connecting crate diggers and sound artists across Podil.",
+          "meta": "43 listeners · vinyl + cacao"
+        },
+        "warsaw": {
+          "title": "Warsaw · Echo Bloom",
+          "description": "Hyperpop journaling club blending poetry prompts with shared headphone rituals.",
+          "meta": "29 listeners · rooftop"
+        },
+        "lisbon": {
+          "title": "Lisbon · Tidal Bloom",
+          "description": "Sunset downtempo circle where surfers swap mixtapes before night rides.",
+          "meta": "54 listeners · oceanside"
+        }
+      }
+    }
+  },
+  "match": {
+    "eyebrow": "Live matching",
+    "title": "Discover listeners curated for you",
+    "subtitle": "Swipe through profiles, react instantly and add a note when it matters.",
+    "queueLabel": "in queue",
+    "states": {
+      "loading": "Loading suggestions…",
+      "empty": "No suitable profiles right now. Check back soon.",
+      "idle": "Waiting for new suggestions."
+    },
+    "labels": {
+      "noPhotos": "No photos yet"
+    },
+    "errors": {
+      "load": "Could not load suggestions.",
+      "reaction": "Could not send your reaction.",
+      "noProfile": "We could not find your MelodyMatch profile. Complete it first."
+    },
+    "actions": {
+      "refresh": "Refresh suggestions",
+      "skip": "Skip",
+      "message": "Like with message",
+      "report": "Report",
+      "like": "Like"
+    },
+    "modals": {
+      "cancel": "Cancel",
+      "message": {
+        "title": "Send a note",
+        "description": "Add a line to send with your like.",
+        "placeholder": "Write a short message…",
+        "submit": "Send like with message"
+      },
+      "report": {
+        "title": "Report profile",
+        "description": "Share what felt off. Our care team will review.",
+        "placeholder": "Describe the issue",
+        "submit": "Send report"
+      }
+    }
+  },
+  "likes": {
+    "eyebrow": "Incoming likes",
+    "title": "People who liked you",
+    "subtitle": "See who reached out and decide how to respond.",
+    "states": {
+      "loading": "Loading likes…",
+      "empty": "No new likes right now.",
+      "idle": "Waiting for new likes."
+    },
+    "errors": {
+      "load": "Could not load likes.",
+      "reaction": "Could not send your reaction.",
+      "noProfile": "We could not find your MelodyMatch profile. Complete it first."
+    },
+    "actions": {
+      "refresh": "Refresh likes"
+    }
+  },
+  "chats": {
+    "eyebrow": "Conversations",
+    "title": "Your chats",
+    "subtitle": "People you matched with recently. Tap to continue the vibe.",
+    "states": {
+      "loading": "Loading chats…",
+      "empty": "No chats yet. Start matching to open conversations.",
+      "error": "Could not load chats right now."
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "deleteChat": "Delete chat",
+      "deleteChatConfirm": "Delete this chat? It will remove the conversation and all messages permanently.",
+      "deleteChatConfirmTitle": "Delete chat forever?",
+      "deleteChatConfirmDescription": "This will remove the conversation and all messages. You cannot undo this action."
+    },
+    "labels": {
+      "fallbackName": "Listener",
+      "noMessages": "No messages yet"
+    },
+    "thread": {
+      "back": "Back to chats",
+      "online": "Online",
+      "offline": "Offline",
+      "typing": "Typing…",
+      "connected": "Connected",
+      "disconnected": "Reconnecting…",
+      "loading": "Loading conversation…",
+      "empty": "No messages in this chat yet.",
+      "error": "Could not load this chat.",
+      "sendError": "Could not send message.",
+      "updateError": "Could not update message.",
+      "deleteError": "Could not delete message.",
+      "deleteConfirm": "Delete this message?",
+      "placeholder": "Type a message…",
+      "send": "Send",
+      "edit": "Edit",
+      "editMessage": "Edit message",
+      "messageActions": "Message actions",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    }
+  },
+  "auth": {
+    "common": {
+      "loading": "Just a moment...",
+      "show": "Show",
+      "hide": "Hide"
+    },
+    "login": {
+      "eyebrow": "Back to your matches",
+      "title": "Sign in to MelodyMatch",
+      "subtitle": "Drop back into curated rooms, playlists and thoughtful people.",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "Enter your username",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "submit": "Sign in",
+      "helper": "Still discovering us?",
+      "helperCta": "Create an account"
+    },
+    "register": {
+      "eyebrow": "Start your story",
+      "title": "Create a MelodyMatch profile",
+      "subtitle": "Tell us how to call you and where we should send intimate session invites.",
+      "usernameLabel": "Display name",
+      "usernamePlaceholder": "How should we address you?",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "name@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Create a secure password",
+      "confirmPasswordLabel": "Confirm password",
+      "confirmPasswordPlaceholder": "Repeat your password",
+      "submit": "Create account",
+      "helper": "Already vibing with us?",
+      "helperCta": "Sign in",
+      "success": "Account created. Redirecting you to sign in."
+    },
+    "errors": {
+      "required": "This field is required.",
+      "invalidCredentials": "Incorrect username or password.",
+      "passwordMismatch": "Passwords must match.",
+      "registrationFailed": "We could not complete the registration. Try again.",
+      "emailInvalid": "Provide a valid email address.",
+      "noCyrillic": "Please use only Latin characters.",
+      "passwordRequiresDigit": "Passwords must have at least one digit ('0'-'9').",
+      "passwordRequiresLowercase": "Passwords must have at least one lowercase ('a'-'z').",
+      "passwordRequiresUppercase": "Passwords must have at least one uppercase ('A'-'Z')."
+    },
+    "preview": {
+      "eyebrow": "Community vow",
+      "title": "Stay grounded while you match",
+      "description": "Every onboarding step protects intentionality so people arrive soft, honest and ready to listen.",
+      "points": {
+        "discovery": "Living discovery feed tuned by energy, not swipes.",
+        "events": "Access to curated IRL salons & co-listening rituals.",
+        "safety": "Care-first moderation and verified sonic identities."
+      }
+    }
+  },
+  "profile": {
+    "eyebrow": "Profile studio",
+    "title": "Shape your MelodyMatch presence",
+    "subtitle": "Edit your identity account, MelodyMatch settings and discovery profile from one screen.",
+    "state": {
+      "loading": "Loading your profile…",
+      "loadError": "We could not load your profile details.",
+      "success": "Profile updated successfully.",
+      "error": "We could not save your changes.",
+      "avatarError": "Could not upload avatar. Try a different file.",
+      "photoError": "Could not upload the selected photo."
+    },
+    "identity": {
+      "title": "Identity account",
+      "description": "These fields live in the IdentityServer user and power authentication.",
+      "readonlyNotice": "Identity fields are managed by administrators. Contact support if you need to update them.",
+      "fields": {
+        "userName": "Username",
+        "email": "Email address",
+        "name": "First name",
+        "namePlaceholder": "Your given name",
+        "surname": "Last name",
+        "surnamePlaceholder": "Your family name",
+        "phoneNumber": "Phone number",
+        "isActive": "Account is active",
+        "lockoutEnabled": "Allow lockout protection"
+      },
+      "partialError": "Identity data could not be updated due to missing permissions. Other sections were saved."
+    },
+    "melody": {
+      "title": "MelodyMatch user",
+      "description": "Control gender and avatar that are shared across the product.",
+      "genderLabel": "Gender",
+      "gender": {
+        "notSpecified": "Not specified",
+        "male": "Male",
+        "female": "Female"
+      },
+      "avatarUrl": "Avatar URL",
+    "avatarHelper": "Upload a square image so it looks crisp in the navigation.",
+    "avatarPreviewAlt": "Avatar preview",
+    "uploadCta": "Upload avatar",
+    "uploadLoading": "Uploading…",
+    "crop": {
+      "title": "Adjust your avatar",
+      "instructions": "Drag to reposition the image and use the slider to zoom.",
+      "confirm": "Apply",
+      "cancel": "Cancel",
+      "zoom": "Zoom"
+    }
+  },
+    "userProfile": {
+      "title": "Discovery profile",
+      "description": "This data powers matching filters and how you appear to others.",
+      "fields": {
+        "age": "Age",
+        "bio": "Bio",
+        "bioPlaceholder": "Describe your vibe, music rituals or energy.",
+        "location": "Location",
+        "locationPlaceholder": "City, region or remote",
+        "preferredMinAge": "Preferred min age",
+        "preferredMaxAge": "Preferred max age",
+        "preferredGenders": "Preferred genders",
+        "interests": "Interests",
+        "interestsHelper": "Pick every genre that feels like you. We use these to find better matches.",
+        "profilePhotoUrls": "Profile photos"
+      },
+      "interests": {
+        "rock": "Rock",
+        "pop": "Pop",
+        "jazz": "Jazz",
+        "classical": "Classical",
+        "hipHop": "Hip Hop",
+        "electronic": "Electronic",
+        "country": "Country",
+        "reggae": "Reggae",
+        "metal": "Metal",
+        "folk": "Folk",
+        "blues": "Blues",
+        "rnb": "R&B",
+        "indie": "Indie",
+        "alternative": "Alternative",
+        "funk": "Funk",
+        "disco": "Disco",
+        "gospel": "Gospel",
+        "ska": "Ska",
+        "punk": "Punk",
+        "soul": "Soul",
+        "ambient": "Ambient"
+      },
+      "locationField": {
+        "detectCta": "Use current location",
+        "detecting": "Detecting your city…",
+        "geoUnavailable": "Geolocation isn't supported here. Enter the city manually.",
+        "permissionDenied": "We can't access your location. Allow permissions or type it manually.",
+        "unavailable": "We couldn't read your position. Try again.",
+        "timeout": "Locating timed out. Try again.",
+        "lookupFailed": "We couldn't determine your city. Try again later.",
+        "detected": "Detected {{city}}.",
+        "ipFallback": "Couldn't read GPS signal. Trying network lookup…",
+        "ipFallbackFailed": "We couldn't guess your city from the network."
+      },
+    "photoUploadCta": "Add photo",
+    "photoUploadLoading": "Uploading…",
+    "photoUploadDisabled": "Save your profile first to enable photo uploads.",
+    "photosEmpty": "No profile photos yet.",
+    "removePhoto": "Remove photo",
+    "photoLimit": "You can add up to 3 profile photos.",
+    "photoDeleteError": "We couldn't remove that photo. Try again."
+  },
+    "actions": {
+      "save": "Save changes",
+      "saving": "Saving…",
+      "reset": "Reset"
+    },
+    "errors": {
+      "required": "This field is required.",
+      "length": "Maximum length is {{max}} characters.",
+      "email": "Enter a valid email address.",
+      "url": "Enter a valid URL or leave the field empty.",
+      "gender": "Select a valid gender value.",
+      "number": "Provide a valid non-negative number.",
+      "bioLength": "Bio must be at most 600 characters.",
+      "locationLength": "Location must be at most 120 characters.",
+      "min": "Value must be at least {{min}}.",
+      "phone": "Enter a valid phone number, e.g. +380441112233."
+    }
+  },
+  "notifications": {
+    "open": "Open notifications",
+    "title": "Notifications",
+    "unread": "Unread",
+    "unreadCount": "{{count}} unread",
+    "allCaughtUp": "All caught up",
+    "loading": "Loading notifications...",
+    "refresh": "Refresh",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications yet.",
+    "types": {
+      "complaintResolved": "Complaint resolved - user banned",
+      "complaintDismissed": "Complaint dismissed",
+      "userBanned": "User banned",
+      "general": "Notification"
+    },
+    "loadError": "Unable to load notifications."
+  },
+  "adminComplaints": {
+    "eyebrow": "Moderation",
+    "title": "User complaints",
+    "subtitle": "Review reports, ban offenders and keep reporters in the loop.",
+    "filters": {
+      "all": "All statuses",
+      "status": "Status",
+      "apply": "Apply filters",
+      "refresh": "Refresh list"
+    },
+    "status": {
+      "sent": "New",
+      "inProgress": "In progress",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
+    },
+    "listAria": "Complaints list",
+    "empty": "No complaints match your filters.",
+    "complaintId": "Case {{id}}",
+    "details": {
+      "reporter": "Reporter",
+      "reportedUser": "Reported user",
+      "reporterLabel": "Reported by {{reporter}}",
+      "reason": "Reason",
+      "submitted": "Submitted",
+      "age": "Age",
+      "location": "Location",
+      "bio": "Bio",
+      "noReason": "No reason provided",
+      "noBio": "No bio provided",
+      "noPhotos": "No profile photos",
+      "unknown": "Unknown",
+      "reporterValue": "From: {{reporter}}",
+      "reportedValue": "About: {{reported}}"
+    },
+    "actions": {
+      "banReason": "Ban reason",
+      "banPlaceholder": "Describe why this account is banned",
+      "banSubmit": "Ban user",
+      "dismiss": "Dismiss complaint",
+      "markInProgress": "Mark in progress",
+      "markPending": "Mark as new",
+      "unban": "Unban user",
+      "processing": "Processing...",
+      "resolutionNote": "Resolution note",
+      "notePlaceholder": "Add context for the reporter"
+    },
+    "noSelection": "Select a complaint to review.",
+    "feedback": {
+      "successTitle": "Saved",
+      "errorTitle": "Something went wrong",
+      "banSuccess": "User banned and the reporter will be notified.",
+      "dismissSuccess": "Complaint dismissed and the reporter will be notified.",
+      "unbanSuccess": "User unbanned.",
+      "actionError": "Action failed. Try again.",
+      "loadError": "Unable to load complaints."
+    }
+  },
+  "footer": {
+    "tagline": "Handcrafted in Kyiv for soulful audio communities.",
+    "product": "Product",
+    "company": "Company",
+    "support": "Support",
+    "links": {
+      "journey": "Matching journey",
+      "events": "Pop-up events",
+      "stories": "Success stories",
+      "press": "Press kit",
+      "careers": "Careers",
+      "contact": "Contact",
+      "help": "Help center",
+      "security": "Security",
+      "guidelines": "Community guidelines"
+    },
+    "genres": {
+      "neoSoul": "Neo-soul",
+      "deepHouse": "Deep house",
+      "indiePop": "Indie pop"
+    },
+    "genresLabel": "Genres we nurture",
+    "rights": "All rights reserved. Crafted for dreamers with headphones.",
+    "social": {
+      "instagram": "Instagram",
+      "telegram": "Telegram",
+      "spotify": "Spotify"
+    }
+  }
+}
